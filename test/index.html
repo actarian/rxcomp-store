@@ -1,0 +1,23 @@
+<!-- @@master = ./templates/layout.html { "class": "page--test", "title": "RxCompStore" } -->
+<!-- @@block = main-->
+<main class="app" app-component>
+	<!-- include ./templates/shared/header.html -->
+	<div class="container">
+		<div class="btn" (click)="addItem()">
+			<span>add</span>
+		</div>
+		<div class="btn" *for="let item of todolist">
+			<span (click)="onToggle(item)" [innerHTML]="item.name" [style]="{ opacity: item.completed ? 0.5 : 1 }"></span>
+			<span *if="item.completed">done</span>
+			<span class="remove" (click)="removeItem(item.id)">X</span>
+		</div>
+		<div class="error" *if="error" [innerHTML]="error"></div>
+		<div class="busy" *if="busy"></div>
+		<pre debug-component [debug]="todolist"></pre>
+		<counter-component></counter-component>
+	</div>
+</main>
+<!-- @@close-->
+<!-- @@block = js-->
+<script src="/rxcomp-store/js/main.min.js"></script>
+<!-- @@close-->

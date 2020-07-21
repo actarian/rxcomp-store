@@ -1,0 +1,50 @@
+{
+  "author": "Luca Zampetti <lzampetti@gmail.com>",
+  "name": "rxcomp-store",
+  "description": "Reactive StoreModule for RxComp component library",
+  "version": "1.0.0-beta.10",
+  "browser": "dist/umd/rxcomp-store.js",
+  "main": "dist/cjs/rxcomp-store.js",
+  "types": "dist/cjs/rxcomp-store.d.ts",
+  "es2015": "dist/esm/rxcomp-store.js",
+  "files": [
+    "dist/",
+    "!.DS_Store"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "rxcomp",
+    "framework",
+    "immer",
+    "store",
+    "rxjs",
+    "es6",
+    "es2015"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/actarian/rxcomp-store.git"
+  },
+  "bugs": {
+    "url": "https://github.com/actarian/rxcomp-store/issues"
+  },
+  "homepage": "https://github.com/actarian/rxcomp-store",
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp build --target dist",
+    "docs": "typedoc --options typedoc.json",
+    "docs2": "typedoc --out docs/documentation src/rxcomp-store.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
+  },
+  "dependencies": {
+    "immer": "~7.0.5",
+    "rxjs": "~6.5.4",
+    "rxcomp": "~1.0.0-beta.10",
+    "tslib": "~2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "~14.0.24",
+    "gulpfile-config": "~1.0.0-alpha.9",
+    "typedoc": "~0.17.8",
+    "typescript": "~3.9.7"
+  }
+}

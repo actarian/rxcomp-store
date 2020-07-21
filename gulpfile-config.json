@@ -1,0 +1,81 @@
+﻿{
+  "targets": {
+    "browser": {
+      "compile": [
+        {
+          "input": "test/*.html",
+          "output": "docs/",
+          "minify": false
+        },
+        {
+          "input": "test/css/main.scss",
+          "output": "docs/css/main.css",
+          "minify": true
+        },
+        {
+          "input": "test/js/main.ts",
+          "output": {
+            "file": "docs/js/main.js",
+            "format": "iife"
+          },
+          "globals": {
+            "rxjs": "rxjs",
+            "rxjs/operators": "rxjs.operators",
+            "immer": "immer",
+            "rxcomp": "rxcomp"
+          },
+          "minify": true
+        }
+      ],
+      "bundle": [
+        {
+          "input": "../rxcomp/dist/iife/rxcomp.js",
+          "output": "docs/js/rxcomp.js",
+          "minify": false
+        }
+      ]
+    },
+    "dist": {
+      "compile": [
+        {
+          "input": "src/rxcomp-store.ts",
+          "output": [
+            {
+              "file": "dist/cjs/",
+              "format": "cjs"
+            },
+            {
+              "file": "dist/esm/",
+              "format": "esm"
+            },
+            {
+              "file": "dist/umd/rxcomp-store.js",
+              "format": "umd",
+              "minify": true
+            },
+            {
+              "file": "dist/iife/rxcomp-store.js",
+              "format": "iife",
+              "minify": true
+            }
+          ],
+          "globals": {
+            "immer": "immer",
+            "rxjs": "rxjs",
+            "rxjs/operators": "rxjs.operators",
+            "rxcomp": "rxcomp"
+          },
+          "name": "rxcomp.form"
+        }
+      ]
+    }
+  },
+  "server": {
+    "src": "./docs",
+    "path": "/rxcomp-store/",
+    "host": "localhost",
+    "port": 40997,
+    "log": false
+  },
+  "tfs": false
+}
