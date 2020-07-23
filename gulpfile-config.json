@@ -34,8 +34,8 @@
       ],
       "bundle": [
         {
-          "input": "../rxcomp/dist/iife/rxcomp-store.js",
-          "output": "docs/js/rxcomp-store.js",
+          "input": "../rxcomp/dist/iife/rxcomp.js",
+          "output": "docs/js/rxcomp.js",
           "minify": false
         }
       ]
@@ -84,7 +84,7 @@
     "src": "./docs",
     "path": "/rxcomp-store/",
     "host": "localhost",
-    "port": 40997,
+    "port": 40996,
     "log": false
   },
   "tfs": false

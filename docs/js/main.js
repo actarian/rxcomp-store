@@ -732,10 +732,6 @@
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
 
-  function getCjsExportFromNamespace (n) {
-  	return n && n['default'] || n;
-  }
-
   var localStorage_service = createCommonjsModule(function (module, exports) {
 
     Object.defineProperty(exports, "__esModule", {
@@ -1191,8 +1187,6 @@
     __classPrivateFieldSet: __classPrivateFieldSet
   });
 
-  var tslib_1 = getCjsExportFromNamespace(tslib_es6);
-
   var store_module = createCommonjsModule(function (module, exports) {
 
     Object.defineProperty(exports, "__esModule", {
@@ -1202,15 +1196,15 @@
     var pipes = [];
 
     var StoreModule = function (_super) {
-      tslib_1.__extends(StoreModule, _super);
+      tslib_es6.__extends(StoreModule, _super);
 
       function StoreModule() {
         return _super !== null && _super.apply(this, arguments) || this;
       }
 
       StoreModule.meta = {
-        declarations: tslib_1.__spreadArrays(factories, pipes),
-        exports: tslib_1.__spreadArrays(factories, pipes)
+        declarations: tslib_es6.__spreadArrays(factories, pipes),
+        exports: tslib_es6.__spreadArrays(factories, pipes)
       };
       return StoreModule;
     }(rxcomp__default.Module);
@@ -1225,9 +1219,9 @@
       value: true
     });
 
-    var local_storage_service_1 = tslib_1.__importDefault(localStorage_service);
+    var local_storage_service_1 = tslib_es6.__importDefault(localStorage_service);
 
-    var session_storage_service_1 = tslib_1.__importDefault(sessionStorage_service);
+    var session_storage_service_1 = tslib_es6.__importDefault(sessionStorage_service);
 
     function _busy(store) {
       return rxjs__default.of(null).pipe(operators__default.filter(function () {

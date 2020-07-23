@@ -15,91 +15,96 @@
 	<meta name="description" content="">
 	<meta name="apple-mobile-web-app-title" content="RxCompStore">
 	<meta name="application-name" content="RxCompStore">
+	<link rel="apple-touch-icon" sizes="180x180" href="/rxcomp-store/img/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/rxcomp-store/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/rxcomp-store/img/favicon-16x16.png">
+	<link rel="shortcut icon" type="image/png" href="/rxcomp-store/img/favicon.ico" />
+	<link rel="manifest" href="/rxcomp-store/img/site.webmanifest">
+	<link rel="mask-icon" href="/rxcomp-store/img/safari-pinned-tab.svg" color="#5bbad5">
 	<meta name="msapplication-TileColor" content="#212121">
 	<meta name="theme-color" content="#ffffff">
-	<link rel="shortcut icon" type="image/png" href="/rxcomp-store/img/favicon.ico" />
 	<link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/rxcomp-store/css/rxcomp-store.min.css" />
 	<link rel="stylesheet" href="/rxcomp-store/css/main.min.css" />
-	<!-- start css -->
+<!-- start css -->
 
 
-	<!-- end css -->
+<!-- end css -->
 </head>
 
 <body class="page--test">
-	<!-- start analytics.html-->
-	<script>
-		(function(w, d, s, l, i) {
-			w[l] = w[l] || [];
-			w[l].push({
-				'gtm.start': new Date().getTime(),
-				event: 'gtm.js'
-			});
-			var f = d.getElementsByTagName(s)[0],
-				j = d.createElement(s),
-				dl = l != 'dataLayer' ? '&l=' + l : '';
-			j.async = true;
-			j.src =
-				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-			f.parentNode.insertBefore(j, f);
-		})(window, document, 'script', 'dataLayer', 'GTM-WL42JM2');
+<!-- start analytics.html-->
+<script>
+	(function(w, d, s, l, i) {
+		w[l] = w[l] || [];
+		w[l].push({
+			'gtm.start': new Date().getTime(),
+			event: 'gtm.js'
+		});
+		var f = d.getElementsByTagName(s)[0],
+			j = d.createElement(s),
+			dl = l != 'dataLayer' ? '&l=' + l : '';
+		j.async = true;
+		j.src =
+			'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+		f.parentNode.insertBefore(j, f);
+	})(window, document, 'script', 'dataLayer', 'GTM-WL42JM2');
 
-	</script>
-	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL42JM2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+</script>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL42JM2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-	<!-- end analytics.html-->
-	<!-- start main -->
-	<main class="app" app-component>
-		<div class="app__inner">
-			<!-- start header.html-->
-			<div class="header">
-				<div class="container">
-					<a href="https://github.com/actarian/rxcomp" target="_blank" class="brand">RxComp</a>
-					<a href="https://twitter.com/actarian" target="_blank" class="btn--twitter">
-						<i class="icon--twitter"></i>
-					</a>
-					<a href="https://github.com/actarian/rxcomp" target="_blank" class="btn--github">
-						<i class="icon--github"></i>
-					</a>
-				</div>
+<!-- end analytics.html-->
+<!-- start main -->
+<main class="app" app-component>
+	<div class="app__inner">
+<!-- start header.html-->
+<div class="header">
+	<div class="container">
+		<a href="https://github.com/actarian/rxcomp" target="_blank" class="brand">RxComp</a>
+		<a href="https://twitter.com/actarian" target="_blank" class="btn--twitter">
+			<i class="icon--twitter"></i>
+		</a>
+		<a href="https://github.com/actarian/rxcomp" target="_blank" class="btn--github">
+			<i class="icon--github"></i>
+		</a>
+	</div>
+</div>
+
+<!-- end header.html-->
+		<div class="container">
+			<div class="group--cta">
+				<div class="btn" (click)="onAddItem()"><span>add</span></div>
+				<div class="btn" (click)="onClearItems()"><span>clear</span></div>
 			</div>
-
-			<!-- end header.html-->
-			<div class="container">
-				<div class="group--cta">
-					<div class="btn" (click)="onAddItem()"><span>add</span></div>
-					<div class="btn" (click)="onClearItems()"><span>clear</span></div>
-				</div>
-				<div class="busy" [class]="{ hidden : !state.busy }"></div>
-				<div class="btn" *for="let item of state.todolist">
-					<span (click)="onToggle(item)" [innerHTML]="item.name" [style]="{ opacity: item.completed ? 0.5 : 1 }"></span>
-					<span *if="item.completed">done</span>
-					<span class="remove" (click)="removeItem(item.id)">X</span>
-				</div>
-				<div class="error" *if="state.error" [innerHTML]="state.error"></div>
-				<!--
+			<div class="busy" [class]="{ hidden : !state.busy }"></div>
+			<div class="btn" *for="let item of state.todolist">
+				<span (click)="onToggle(item)" [style]="{ opacity: item.completed ? 0.5 : 1 }" [innerHTML]="item.name"></span>
+				<span *if="item.completed">done</span>
+				<span class="remove" (click)="removeItem(item.id)">X</span>
+			</div>
+			<div class="error" *if="state.error" [innerHTML]="state.error"></div>
+			<!--
 			<json-component [debug]="state"></json-component>
 			<counter-component></counter-component>
 			-->
-				<json-component [item]="state"></json-component>
-				<session-storage-component></session-storage-component>
-				<local-storage-component></local-storage-component>
-				<cookie-storage-component></cookie-storage-component>
-			</div>
+			<session-storage-component></session-storage-component>
+			<local-storage-component></local-storage-component>
+			<cookie-storage-component></cookie-storage-component>
+			<json-component [item]="state"></json-component>
 		</div>
-	</main>
+	</div>
+</main>
 
-	<!-- end main -->
+<!-- end main -->
 	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CArray.prototype.find%2CObject.assign%2CPromise%2CMap"></script>
-	<script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js"></script>
-	<script src="https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js"></script>
-	<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/iife/rxcomp.min.js"></script>
-	<!-- <script src="/rxcomp-store/js/rxcomp.js"></script> -->
-	<!-- start js -->
-	<script src="/rxcomp-store/js/main.min.js"></script>
+	<script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
+	<script src="https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
+	<!--<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/iife/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>-->
+	<script src="/rxcomp-store/js/rxcomp.js"></script>
+<!-- start js -->
+<script src="/rxcomp-store/js/main.min.js"></script>
 
-	<!-- end js -->
+<!-- end js -->
 </body>
 
 </html>

@@ -10,7 +10,7 @@
 			</div>
 			<div class="busy" [class]="{ hidden : !state.busy }"></div>
 			<div class="btn" *for="let item of state.todolist">
-				<span (click)="onToggle(item)" [innerHTML]="item.name" [style]="{ opacity: item.completed ? 0.5 : 1 }"></span>
+				<span (click)="onToggle(item)" [style]="{ opacity: item.completed ? 0.5 : 1 }" [innerHTML]="item.name"></span>
 				<span *if="item.completed">done</span>
 				<span class="remove" (click)="removeItem(item.id)">X</span>
 			</div>
@@ -19,10 +19,10 @@
 			<json-component [debug]="state"></json-component>
 			<counter-component></counter-component>
 			-->
-			<json-component [item]="state"></json-component>
 			<session-storage-component></session-storage-component>
 			<local-storage-component></local-storage-component>
 			<cookie-storage-component></cookie-storage-component>
+			<json-component [item]="state"></json-component>
 		</div>
 	</div>
 </main>
