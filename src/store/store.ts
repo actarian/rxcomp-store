@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import CookieStorageService from '../storage/cookie-storage.service';
 import LocalStorageService from '../storage/local-storage.service';
 import SessionStorageService from '../storage/session-storage.service';
 
@@ -35,6 +36,10 @@ function setState(store: Store): (callback: (draft: any) => any) => any {
 				SessionStorageService.set(store.key, draft);
 				// console.log('setState.SessionStorageService.set', store.key, draft);
 			}
+			if (store.type === StoreType.Cookie) {
+				CookieStorageService.set(store.key, draft, 365);
+				// console.log('setState.CookieStorageService.set', store.key, draft);
+			}
 		};
 		return output;
 	};
@@ -56,22 +61,19 @@ function getState(store: Store, callback: (value: any) => any): Observable<any> 
 			let value = null;
 			if (store.type === StoreType.Local) {
 				value = LocalStorageService.get(store.key);
-				if (value && typeof callback === 'function') {
-					value = callback(value);
-				}
-				// console.log('getLocal.LocalStorageService.get', store.key, value);
 			} else if (store.type === StoreType.Session) {
 				value = SessionStorageService.get(store.key);
-				if (value && typeof callback === 'function') {
-					value = callback(value);
-				}
-				// console.log('getLocal.SessionStorageService.get', store.key, value);
+			} else if (store.type === StoreType.Cookie) {
+				value = CookieStorageService.get(store.key);
+			}
+			if (value && typeof callback === 'function') {
+				value = callback(value);
 			}
 			return value;
 		}),
 		filter((x) => {
 			// console.log('value', x);
-			return x !== null;
+			return x != null;
 		})
 	);
 }
@@ -91,6 +93,7 @@ export enum StoreType {
 	Memory = 1,
 	Session = 2,
 	Local = 3,
+	Cookie = 4,
 };
 
 export class Store {
@@ -114,6 +117,7 @@ export class Store {
 	}
 
 	setState(callback: (draft: any) => any): void { }
+
 }
 
 export interface IStore {

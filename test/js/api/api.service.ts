@@ -29,10 +29,17 @@ export default class ApiService {
 			// simulate api error
 			return of(1).pipe(
 				delay(DELAY * Math.random()),
-				switchMap(() => throwError(`error ${id}`))
+				switchMap(() => throwError(`simulated error ${id}`))
 			);
 		}
 		return of({ id: id, name: `${PROGRESSIVE_INDEX++} item ${id}` }).pipe(
+			delay(DELAY * Math.random())
+		);
+	}
+
+	static clearItems$(url: string): Observable<ITodoItem[]> {
+		// simulate api call
+		return of([]).pipe(
 			delay(DELAY * Math.random())
 		);
 	}

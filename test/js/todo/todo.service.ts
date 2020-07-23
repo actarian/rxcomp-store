@@ -40,6 +40,15 @@ export class TodoService {
 		);
 	}
 
+	static clearItems$(): Observable<ITodoItem[] | void> {
+		return busy().pipe(
+			switchMap(() => ApiService.clearItems$('url').pipe(
+				tap((items) => setState((state: any) => state.todolist = items)),
+				catchError((error: any) => setError(error))
+			))
+		);
+	}
+
 	static removeItem$(id: number): Observable<number | void> {
 		return busy().pipe(
 			switchMap(() => ApiService.remove$('url', id).pipe(

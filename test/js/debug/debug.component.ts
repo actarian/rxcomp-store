@@ -1,6 +1,6 @@
 import { Component, getContext, IFactoryMeta } from 'rxcomp';
 
-export default class DebugComponent extends Component {
+export default class JsonComponent extends Component {
 
 	onChanges() {
 		const { node } = getContext(this);
@@ -8,7 +8,7 @@ export default class DebugComponent extends Component {
 	}
 
 	static meta: IFactoryMeta = {
-		selector: '[debug-component]',
+		selector: 'json-component',
 		inputs: ['debug'],
 	};
 }

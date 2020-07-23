@@ -1,21 +1,26 @@
-export default class SessionStorageService {
+import { ReplaySubject } from "rxjs";
+import StorageService, { IStorageItem } from "./storage.service";
 
-	static supported: boolean = false;
+export default class SessionStorageService extends StorageService {
 
-	static clear() {
-		if (this.isSessionStorageSupported()) {
+	static items$: ReplaySubject<IStorageItem[]> = new ReplaySubject(1);
+
+	static clear(): void {
+		if (this.isSupported()) {
 			sessionStorage.clear();
+			this.items$.next(this.toArray());
 		}
 	}
 
-	static delete(name: string) {
-		if (this.isSessionStorageSupported()) {
+	static delete(name: string): void {
+		if (this.isSupported()) {
 			sessionStorage.removeItem(name);
+			this.items$.next(this.toArray());
 		}
 	}
 
 	static exist(name: string): boolean {
-		if (this.isSessionStorageSupported()) {
+		if (this.isSupported()) {
 			return sessionStorage.getItem(name) !== undefined;
 		} else {
 			return false;
@@ -23,45 +28,54 @@ export default class SessionStorageService {
 	}
 
 	static get(name: string): any {
+		return this.decode(this.getRaw(name));
+	}
+
+	static set(name: string, value: any): void {
+		this.setRaw(name, this.encode(value));
+	}
+
+	static getRaw(name: string): string | null {
 		let value = null;
-		if (this.isSessionStorageSupported()) {
-			try {
-				const item = sessionStorage.getItem(name);
-				if (item != null) {
-					value = JSON.parse(item);
-				}
-			} catch (error) {
-				console.log('SessionStorageService.get.error parsing', name, error);
-			}
+		if (this.isSupported()) {
+			value = sessionStorage.getItem(name);
 		}
 		return value;
 	}
 
-	static set(name: string, value: any) {
-		if (this.isSessionStorageSupported()) {
-			try {
-				const cache = new Map();
-				const json = JSON.stringify(value, function (key, value) {
-					if (typeof value === 'object' && value !== null) {
-						if (cache.has(value)) {
-							// Circular reference found, discard key
-							return;
-						}
-						cache.set(value, true);
-					}
-					return value;
-				});
-				sessionStorage.setItem(name, json);
-			} catch (error) {
-				console.log('SessionStorageService.set.error serializing', name, value, error);
-			}
+	static setRaw(name: string, value: string | null): void {
+		if (value && this.isSupported()) {
+			sessionStorage.setItem(name, value);
+			this.items$.next(this.toArray());
 		}
 	}
 
-	static isSessionStorageSupported(): boolean {
+	static toArray(): IStorageItem[] {
+		return this.toRawArray().map(x => {
+			x.value = this.decode(x.value);
+			return x;
+		});
+	}
+
+	static toRawArray(): IStorageItem[] {
+		if (this.isSupported()) {
+			return Object.keys(sessionStorage).map(key => {
+				return {
+					name: key,
+					value: this.getRaw(key),
+				};
+			});
+		} else {
+			return [];
+		}
+	}
+
+	static isSupported(): boolean {
 		if (this.supported) {
 			return true;
 		}
+		return StorageService.isSupported('sessionStorage');
+		/*
 		let supported = false;
 		try {
 			supported = 'sessionStorage' in window && sessionStorage !== null;
@@ -76,5 +90,6 @@ export default class SessionStorageService {
 		}
 		this.supported = supported;
 		return supported;
+		*/
 	}
 }

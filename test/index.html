@@ -1,20 +1,29 @@
 <!-- @@master = ./templates/layout.html { "class": "page--test", "title": "RxCompStore" } -->
 <!-- @@block = main-->
 <main class="app" app-component>
-	<!-- include ./templates/shared/header.html -->
-	<div class="container">
-		<div class="btn" (click)="addItem()">
-			<span>add</span>
+	<div class="app__inner">
+		<!-- @@include ./templates/shared/header.html -->
+		<div class="container">
+			<div class="group--cta">
+				<div class="btn" (click)="onAddItem()"><span>add</span></div>
+				<div class="btn" (click)="onClearItems()"><span>clear</span></div>
+			</div>
+			<div class="busy" [class]="{ hidden : !state.busy }"></div>
+			<div class="btn" *for="let item of state.todolist">
+				<span (click)="onToggle(item)" [innerHTML]="item.name" [style]="{ opacity: item.completed ? 0.5 : 1 }"></span>
+				<span *if="item.completed">done</span>
+				<span class="remove" (click)="removeItem(item.id)">X</span>
+			</div>
+			<div class="error" *if="state.error" [innerHTML]="state.error"></div>
+			<!--
+			<json-component [debug]="state"></json-component>
+			<counter-component></counter-component>
+			-->
+			<json-component [item]="state"></json-component>
+			<session-storage-component></session-storage-component>
+			<local-storage-component></local-storage-component>
+			<cookie-storage-component></cookie-storage-component>
 		</div>
-		<div class="btn" *for="let item of todolist">
-			<span (click)="onToggle(item)" [innerHTML]="item.name" [style]="{ opacity: item.completed ? 0.5 : 1 }"></span>
-			<span *if="item.completed">done</span>
-			<span class="remove" (click)="removeItem(item.id)">X</span>
-		</div>
-		<div class="error" *if="error" [innerHTML]="error"></div>
-		<div class="busy" *if="busy"></div>
-		<pre debug-component [debug]="todolist"></pre>
-		<counter-component></counter-component>
 	</div>
 </main>
 <!-- @@close-->
