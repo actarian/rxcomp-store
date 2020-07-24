@@ -577,7 +577,7 @@
     exports: [].concat(factories, pipes)
   };
 
-  function _busy(store) {
+  function _busyState$(store) {
     return rxjs.of(null).pipe(operators.filter(function () {
       var busy = store.selectState(function (state) {
         return state.busy;
@@ -633,26 +633,59 @@
     };
   }
 
-  function _getState(store, callback) {
-    return rxjs.of(null).pipe(operators.map(function () {
-      var value = null;
+  function catchErrorState(store) {
+    return function (errorReducer) {
+      return function (source) {
+        return rxjs.defer(function () {
+          return source.pipe(operators.catchError(function (error) {
+            store.state = function (draft) {
+              draft.error = error;
+              draft.busy = false;
+            };
 
-      if (store.type === StoreType.Local) {
-        value = LocalStorageService.get(store.key);
-      } else if (store.type === StoreType.Session) {
-        value = SessionStorageService.get(store.key);
-      } else if (store.type === StoreType.Cookie) {
-        value = CookieStorageService.get(store.key);
-      }
+            if (typeof errorReducer === 'function') {
+              error = errorReducer(error);
+            } else {
+              error = null;
+            }
 
-      if (value && typeof callback === 'function') {
-        value = callback(value);
-      }
+            return error ? rxjs.of(error) : rxjs.of();
+          }));
+        });
+      };
+    };
+  }
 
-      return value;
-    }), operators.filter(function (x) {
-      return x != null;
-    }));
+  function reduceState(store) {
+    return function reduceState(stateReducer) {
+      return function (source) {
+        return rxjs.defer(function () {
+          return source.pipe(operators.map(function (data) {
+            if (typeof stateReducer === 'function') {
+              store.state = function (draft) {
+                draft.error = null;
+                stateReducer(data, draft);
+                draft.busy = false;
+
+                if (store.type === StoreType.Local) {
+                  LocalStorageService.set(store.key, draft);
+                }
+
+                if (store.type === StoreType.Session) {
+                  SessionStorageService.set(store.key, draft);
+                }
+
+                if (store.type === StoreType.Cookie) {
+                  CookieStorageService.set(store.key, draft, 365);
+                }
+              };
+            }
+
+            return data;
+          }));
+        });
+      };
+    };
   }
 
   function makeSetState(state) {
@@ -677,6 +710,28 @@
     return function (callback) {
       return state.pipe(operators.map(callback), operators.distinctUntilChanged());
     };
+  }
+
+  function _cachedState$(store, callback) {
+    return rxjs.of(null).pipe(operators.map(function () {
+      var value = null;
+
+      if (store.type === StoreType.Local) {
+        value = LocalStorageService.get(store.key);
+      } else if (store.type === StoreType.Session) {
+        value = SessionStorageService.get(store.key);
+      } else if (store.type === StoreType.Cookie) {
+        value = CookieStorageService.get(store.key);
+      }
+
+      if (value && typeof callback === 'function') {
+        value = callback(value);
+      }
+
+      return value;
+    }), operators.filter(function (x) {
+      return x != null;
+    }));
   }
 
   var StoreType;
@@ -739,16 +794,18 @@
   function useStore(state, type, key) {
     var store = new Store(state, type, key);
     return {
-      busy: function busy() {
-        return _busy(store);
-      },
-      getState: function getState(callback) {
-        return _getState(store, callback);
+      busyState$: function busyState$() {
+        return _busyState$(store);
       },
       setState: setState(store),
+      reduceState: reduceState(store),
       selectState: store.selectState,
       selectState$: store.selectState$,
+      cachedState$: function cachedState$(callback) {
+        return _cachedState$(store, callback);
+      },
       setError: setError(store),
+      catchErrorState: catchErrorState(store),
       state$: store.state$
     };
   }
@@ -1482,97 +1539,73 @@
     todolist: []
   }, StoreType.Session, 'todolist'),
       state$ = _useStore.state$,
-      busy = _useStore.busy,
-      getState = _useStore.getState,
-      setState$1 = _useStore.setState,
-      setError$1 = _useStore.setError;
+      busyState$ = _useStore.busyState$,
+      cachedState$ = _useStore.cachedState$,
+      reduceState$1 = _useStore.reduceState,
+      catchErrorState$1 = _useStore.catchErrorState;
 
   var TodoService = function () {
     function TodoService() {}
 
     TodoService.loadWithCache$ = function loadWithCache$() {
-      return busy().pipe(operators.switchMap(function () {
-        return rxjs.merge(getState(function (state) {
+      return busyState$().pipe(operators.switchMap(function () {
+        return rxjs.merge(cachedState$(function (state) {
           return state.todolist;
-        }), ApiService.load$('url')).pipe(operators.tap(function (todolist) {
-          return setState$1(function (state) {
-            return state.todolist = todolist;
-          });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+        }), ApiService.load$('url')).pipe(reduceState$1(function (todolist, state) {
+          return state.todolist = todolist;
+        }), catchErrorState$1(console.log));
       }));
     };
 
     TodoService.load$ = function load$() {
-      return busy().pipe(operators.switchMap(function () {
-        return ApiService.load$('url').pipe(operators.tap(function (todolist) {
-          return setState$1(function (state) {
-            return state.todolist = todolist;
-          });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+      return busyState$().pipe(operators.switchMap(function () {
+        return ApiService.load$('url').pipe(reduceState$1(function (todolist, state) {
+          return state.todolist = todolist;
+        }), catchErrorState$1(console.log));
       }));
     };
 
     TodoService.addItem$ = function addItem$() {
-      return busy().pipe(operators.switchMap(function () {
-        return ApiService.addItem$('url').pipe(operators.tap(function (item) {
-          return setState$1(function (state) {
-            state.todolist.push(item);
-          });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+      return busyState$().pipe(operators.switchMap(function () {
+        return ApiService.addItem$('url').pipe(reduceState$1(function (item, state) {
+          state.todolist.push(item);
+        }), catchErrorState$1(console.log));
       }));
     };
 
     TodoService.clearItems$ = function clearItems$() {
-      return busy().pipe(operators.switchMap(function () {
-        return ApiService.clearItems$('url').pipe(operators.tap(function (items) {
-          return setState$1(function (state) {
-            return state.todolist = items;
-          });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+      return busyState$().pipe(operators.switchMap(function () {
+        return ApiService.clearItems$('url').pipe(reduceState$1(function (items, state) {
+          return state.todolist = items;
+        }), catchErrorState$1(console.log));
       }));
     };
 
     TodoService.removeItem$ = function removeItem$(id) {
-      return busy().pipe(operators.switchMap(function () {
-        return ApiService.remove$('url', id).pipe(operators.tap(function (id) {
-          return setState$1(function (state) {
-            var index = state.todolist.reduce(function (p, c, i) {
-              return c.id === id ? i : p;
-            }, -1);
+      return busyState$().pipe(operators.switchMap(function () {
+        return ApiService.remove$('url', id).pipe(reduceState$1(function (id, state) {
+          var index = state.todolist.reduce(function (p, c, i) {
+            return c.id === id ? i : p;
+          }, -1);
 
-            if (index !== -1) {
-              state.todolist.splice(index, 1);
-            }
-          });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+          if (index !== -1) {
+            state.todolist.splice(index, 1);
+          }
+        }), catchErrorState$1(console.log));
       }));
     };
 
     TodoService.toggleCompleted$ = function toggleCompleted$(item) {
-      return busy().pipe(operators.switchMap(function () {
-        return ApiService.patch$('url', item).pipe(operators.tap(function (item) {
-          return setState$1(function (state) {
-            var stateItem = state.todolist.find(function (x) {
-              return x.id === item.id;
-            });
-
-            if (stateItem) {
-              stateItem.completed = !stateItem.completed;
-            }
+      return busyState$().pipe(operators.switchMap(function () {
+        return ApiService.patch$('url', item).pipe(reduceState$1(function (item, state) {
+          var stateItem = state.todolist.find(function (x) {
+            return x.id === item.id;
           });
-        }), operators.catchError(function (error) {
-          return setError$1(error);
-        }));
+
+          if (stateItem) {
+            stateItem.completed = !stateItem.completed;
+          }
+        }), catchErrorState$1(console.log));
       }));
     };
 
