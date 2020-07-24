@@ -1,22 +1,23 @@
 import { produce } from 'immer';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import CookieStorageService from '../storage/cookie-storage.service';
 import LocalStorageService from '../storage/local-storage.service';
 import SessionStorageService from '../storage/session-storage.service';
 
-function busy(store: Store): Observable<any> {
+function busy(store: Store): Observable<null> {
 	return of(null).pipe(
 		filter(() => {
-			let busy;
-			store.state = (draft: any) => {
-				busy = draft.busy;
-				if (!busy) {
+			let busy = store.selectState(state => state.busy);
+			if (!busy) {
+				store.state = (draft: any) => {
 					draft.busy = true;
 					draft.error = null;
-				}
-			};
-			return !busy;
+				};
+				return true;
+			} else {
+				return false;
+			}
 		})
 	);
 }
@@ -89,6 +90,21 @@ function makeSetState(state: BehaviorSubject<any>): (callback: (draft: any) => a
 	};
 }
 
+function makeSelectState(state: BehaviorSubject<any>): (callback: (draft: any) => any) => any {
+	return (callback: (draft: any) => any) => {
+		return callback(state.getValue());
+	};
+}
+
+function makeSelectState$(state: BehaviorSubject<any>): (callback: (draft: any) => any) => Observable<any> {
+	return (callback: (draft: any) => any) => {
+		return state.pipe(
+			map(callback),
+			distinctUntilChanged()
+		);
+	};
+}
+
 export enum StoreType {
 	Memory = 1,
 	Session = 2,
@@ -102,6 +118,10 @@ export class Store {
 	key: string;
 	state$: Observable<any>;
 
+	get state() {
+		return this.selectState((draft: any) => draft);
+	}
+
 	set state(callback: (draft: any) => any) {
 		this.setState(callback);
 	}
@@ -113,17 +133,25 @@ export class Store {
 		state.error = null;
 		const state_ = new BehaviorSubject(state);
 		this.setState = makeSetState(state_);
+		this.selectState = makeSelectState(state_);
+		this.selectState$ = makeSelectState$(state_);
 		this.state$ = state_.asObservable();
 	}
 
 	setState(callback: (draft: any) => any): void { }
 
+	selectState(callback: (draft: any) => any): any { }
+
+	selectState$(callback: (draft: any) => any): Observable<any> { return of(); }
+
 }
 
 export interface IStore {
-	busy: () => Observable<any>,
+	busy: () => Observable<null>,
 	getState: (callback: (draft: any) => any) => any,
 	setState: (callback: (draft: any) => any) => any,
+	selectState: (callback: (draft: any) => any) => any,
+	selectState$: (callback: (draft: any) => any) => any,
 	setError: (error: any) => Observable<void>,
 	state$: Observable<any>,
 }
@@ -134,6 +162,8 @@ export function useStore(state: any, type?: StoreType, key?: string): IStore {
 		busy: () => busy(store),
 		getState: (callback: (draft: any) => any) => getState(store, callback),
 		setState: setState(store),
+		selectState: store.selectState,
+		selectState$: store.selectState$,
 		setError: setError(store),
 		state$: store.state$,
 	};

@@ -579,18 +579,20 @@
 
   function _busy(store) {
     return rxjs.of(null).pipe(operators.filter(function () {
-      var busy;
+      var busy = store.selectState(function (state) {
+        return state.busy;
+      });
 
-      store.state = function (draft) {
-        busy = draft.busy;
-
-        if (!busy) {
+      if (!busy) {
+        store.state = function (draft) {
           draft.busy = true;
           draft.error = null;
-        }
-      };
+        };
 
-      return !busy;
+        return true;
+      } else {
+        return false;
+      }
     }));
   }
 
@@ -665,6 +667,18 @@
     };
   }
 
+  function makeSelectState(state) {
+    return function (callback) {
+      return callback(state.getValue());
+    };
+  }
+
+  function makeSelectState$(state) {
+    return function (callback) {
+      return state.pipe(operators.map(callback), operators.distinctUntilChanged());
+    };
+  }
+
   var StoreType;
 
   (function (StoreType) {
@@ -693,6 +707,8 @@
       state.error = null;
       var state_ = new rxjs.BehaviorSubject(state);
       this.setState = makeSetState(state_);
+      this.selectState = makeSelectState(state_);
+      this.selectState$ = makeSelectState$(state_);
       this.state$ = state_.asObservable();
     }
 
@@ -700,8 +716,19 @@
 
     _proto.setState = function setState(callback) {};
 
+    _proto.selectState = function selectState(callback) {};
+
+    _proto.selectState$ = function selectState$(callback) {
+      return rxjs.of();
+    };
+
     _createClass(Store, [{
       key: "state",
+      get: function get() {
+        return this.selectState(function (draft) {
+          return draft;
+        });
+      },
       set: function set(callback) {
         this.setState(callback);
       }
@@ -719,6 +746,8 @@
         return _getState(store, callback);
       },
       setState: setState(store),
+      selectState: store.selectState,
+      selectState$: store.selectState$,
       setError: setError(store),
       state$: store.state$
     };
@@ -730,6 +759,10 @@
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
+  }
+
+  function getCjsExportFromNamespace (n) {
+  	return n && n['default'] || n;
   }
 
   var localStorage_service = createCommonjsModule(function (module, exports) {
@@ -1187,6 +1220,8 @@
     __classPrivateFieldSet: __classPrivateFieldSet
   });
 
+  var tslib_1 = getCjsExportFromNamespace(tslib_es6);
+
   var store_module = createCommonjsModule(function (module, exports) {
 
     Object.defineProperty(exports, "__esModule", {
@@ -1196,15 +1231,15 @@
     var pipes = [];
 
     var StoreModule = function (_super) {
-      tslib_es6.__extends(StoreModule, _super);
+      tslib_1.__extends(StoreModule, _super);
 
       function StoreModule() {
         return _super !== null && _super.apply(this, arguments) || this;
       }
 
       StoreModule.meta = {
-        declarations: tslib_es6.__spreadArrays(factories, pipes),
-        exports: tslib_es6.__spreadArrays(factories, pipes)
+        declarations: tslib_1.__spreadArrays(factories, pipes),
+        exports: tslib_1.__spreadArrays(factories, pipes)
       };
       return StoreModule;
     }(rxcomp__default.Module);
@@ -1219,9 +1254,9 @@
       value: true
     });
 
-    var local_storage_service_1 = tslib_es6.__importDefault(localStorage_service);
+    var local_storage_service_1 = tslib_1.__importDefault(localStorage_service);
 
-    var session_storage_service_1 = tslib_es6.__importDefault(sessionStorage_service);
+    var session_storage_service_1 = tslib_1.__importDefault(sessionStorage_service);
 
     function _busy(store) {
       return rxjs__default.of(null).pipe(operators__default.filter(function () {
