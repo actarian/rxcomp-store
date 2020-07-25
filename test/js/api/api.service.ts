@@ -25,7 +25,7 @@ export default class ApiService {
 	static addItem$(url: string, item?: ITodoItem): Observable<ITodoItem> {
 		// simulate api call
 		const id = new Date().valueOf();
-		if (Math.random() < 0.25) {
+		if (Math.random() < 0.3) {
 			// simulate api error
 			return of(1).pipe(
 				delay(DELAY * Math.random()),

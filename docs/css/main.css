@@ -611,8 +611,10 @@ counter-component {
           user-select: none;
   cursor: pointer;
   transition: ease-in-out all 150ms; }
-  .btn span {
+  .btn > span {
     padding: 4px 10px; }
+    .btn > span:first-child {
+      flex: 1 0 auto; }
   .btn .remove {
     display: flex;
     justify-content: center;
@@ -623,6 +625,9 @@ counter-component {
     -webkit-user-select: none;
         -ms-user-select: none;
             user-select: none; }
+    .btn .remove:hover {
+      background: #003adc;
+      color: #ffffff; }
   .btn:hover {
     background: #333; }
 

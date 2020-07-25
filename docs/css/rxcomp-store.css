@@ -74,6 +74,9 @@
     flex: 1 1 20px;
     margin-left: 5px;
     cursor: pointer; }
+    .rxc-head__remove:hover {
+      background: #003adc;
+      color: #ffffff; }
 
 .rxc-list {
   display: flex;
@@ -109,6 +112,9 @@
     flex: 1 1 20px;
     margin-left: 5px;
     cursor: pointer; }
+    .rxc-list__remove:hover {
+      background: #003adc;
+      color: #ffffff; }
 
 /*
 .rxc-navs {

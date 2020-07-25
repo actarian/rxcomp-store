@@ -45,6 +45,11 @@ $background-light: #333;
 		flex: 1 1 20px;
 		margin-left: 5px;
 		cursor: pointer;
+
+		&:hover {
+			background: $foreground-primary;
+			color: $foreground-negative;
+		}
 	}
 }
 
@@ -102,6 +107,11 @@ $background-light: #333;
 		flex: 1 1 20px;
 		margin-left: 5px;
 		cursor: pointer;
+
+		&:hover {
+			background: $foreground-primary;
+			color: $foreground-negative;
+		}
 	}
 }
 

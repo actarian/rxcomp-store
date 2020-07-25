@@ -157,8 +157,12 @@ counter-component {
 	cursor: pointer;
 	transition: ease-in-out all 150ms;
 
-	span {
+	&>span {
 		padding: 4px 10px;
+
+		&:first-child {
+			flex: 1 0 auto;
+		}
 	}
 
 	.remove {
@@ -171,6 +175,11 @@ counter-component {
 		// background: #333;
 		line-height: 1;
 		user-select: none;
+
+		&:hover {
+			background: $foreground-primary;
+			color: $foreground-negative;
+		}
 	}
 
 	&:hover {

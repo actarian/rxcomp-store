@@ -78,8 +78,10 @@
 			</div>
 			<div class="busy" [class]="{ hidden : !state.busy }"></div>
 			<div class="btn" *for="let item of state.todolist">
-				<span (click)="onToggle(item)" [style]="{ opacity: item.completed ? 0.5 : 1 }" [innerHTML]="item.name"></span>
-				<span *if="item.completed">done</span>
+				<span (click)="onToggle(item)">
+					<span [style]="{ opacity: item.completed ? 0.5 : 1 }" [innerHTML]="item.name"></span>
+					<span *if="item.completed">done</span>
+				</span>
 				<span class="remove" (click)="removeItem(item.id)">X</span>
 			</div>
 			<div class="error" *if="state.error" [innerHTML]="state.error"></div>
@@ -102,7 +104,7 @@
 	<!--<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/iife/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>-->
 	<script src="/rxcomp-store/js/rxcomp.js"></script>
 <!-- start js -->
-<script src="/rxcomp-store/js/main.min.js"></script>
+<script src="/rxcomp-store/js/main.js"></script>
 
 <!-- end js -->
 </body>

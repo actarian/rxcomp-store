@@ -577,163 +577,6 @@
     exports: [].concat(factories, pipes)
   };
 
-  function _busyState$(store) {
-    return rxjs.of(null).pipe(operators.filter(function () {
-      var busy = store.selectState(function (state) {
-        return state.busy;
-      });
-
-      if (!busy) {
-        store.state = function (draft) {
-          draft.busy = true;
-          draft.error = null;
-        };
-
-        return true;
-      } else {
-        return false;
-      }
-    }));
-  }
-
-  function setState(store) {
-    return function (callback) {
-      var output;
-
-      store.state = function (draft) {
-        draft.error = null;
-        output = callback(draft);
-        draft.busy = false;
-
-        if (store.type === StoreType.Local) {
-          LocalStorageService.set(store.key, draft);
-        }
-
-        if (store.type === StoreType.Session) {
-          SessionStorageService.set(store.key, draft);
-        }
-
-        if (store.type === StoreType.Cookie) {
-          CookieStorageService.set(store.key, draft, 365);
-        }
-      };
-
-      return output;
-    };
-  }
-
-  function setError(store) {
-    return function (error) {
-      store.state = function (draft) {
-        draft.error = error;
-        draft.busy = false;
-      };
-
-      return rxjs.of();
-    };
-  }
-
-  function catchErrorState(store) {
-    return function (errorReducer) {
-      return function (source) {
-        return rxjs.defer(function () {
-          return source.pipe(operators.catchError(function (error) {
-            store.state = function (draft) {
-              draft.error = error;
-              draft.busy = false;
-            };
-
-            if (typeof errorReducer === 'function') {
-              error = errorReducer(error);
-            } else {
-              error = null;
-            }
-
-            return error ? rxjs.of(error) : rxjs.of();
-          }));
-        });
-      };
-    };
-  }
-
-  function reduceState(store) {
-    return function reduceState(stateReducer) {
-      return function (source) {
-        return rxjs.defer(function () {
-          return source.pipe(operators.map(function (data) {
-            if (typeof stateReducer === 'function') {
-              store.state = function (draft) {
-                draft.error = null;
-                stateReducer(data, draft);
-                draft.busy = false;
-
-                if (store.type === StoreType.Local) {
-                  LocalStorageService.set(store.key, draft);
-                }
-
-                if (store.type === StoreType.Session) {
-                  SessionStorageService.set(store.key, draft);
-                }
-
-                if (store.type === StoreType.Cookie) {
-                  CookieStorageService.set(store.key, draft, 365);
-                }
-              };
-            }
-
-            return data;
-          }));
-        });
-      };
-    };
-  }
-
-  function makeSetState(state) {
-    return function (callback) {
-      state.next(immer.produce(state.getValue(), function (draft) {
-        if (typeof callback === 'function') {
-          callback(draft);
-        }
-
-        return draft;
-      }));
-    };
-  }
-
-  function makeSelectState(state) {
-    return function (callback) {
-      return callback(state.getValue());
-    };
-  }
-
-  function makeSelectState$(state) {
-    return function (callback) {
-      return state.pipe(operators.map(callback), operators.distinctUntilChanged());
-    };
-  }
-
-  function _cachedState$(store, callback) {
-    return rxjs.of(null).pipe(operators.map(function () {
-      var value = null;
-
-      if (store.type === StoreType.Local) {
-        value = LocalStorageService.get(store.key);
-      } else if (store.type === StoreType.Session) {
-        value = SessionStorageService.get(store.key);
-      } else if (store.type === StoreType.Cookie) {
-        value = CookieStorageService.get(store.key);
-      }
-
-      if (value && typeof callback === 'function') {
-        value = callback(value);
-      }
-
-      return value;
-    }), operators.filter(function (x) {
-      return x != null;
-    }));
-  }
-
   var StoreType;
 
   (function (StoreType) {
@@ -761,31 +604,133 @@
       state.busy = false;
       state.error = null;
       var state_ = new rxjs.BehaviorSubject(state);
-      this.setState = makeSetState(state_);
-      this.selectState = makeSelectState(state_);
-      this.selectState$ = makeSelectState$(state_);
+      this.push = makeSetState(state_);
+      this.select = makeSelectState(state_);
+      this.select$ = makeSelectState$(state_);
       this.state$ = state_.asObservable();
     }
 
     var _proto = Store.prototype;
 
-    _proto.setState = function setState(callback) {};
+    _proto.busy$ = function busy$() {
+      var _this = this;
 
-    _proto.selectState = function selectState(callback) {};
+      return rxjs.of(null).pipe(operators.filter(function () {
+        var busy = _this.select(function (state) {
+          return state.busy;
+        });
 
-    _proto.selectState$ = function selectState$(callback) {
+        if (!busy) {
+          _this.state = function (draft) {
+            draft.busy = true;
+            draft.error = null;
+          };
+
+          return true;
+        } else {
+          return false;
+        }
+      }));
+    };
+
+    _proto.cached$ = function cached$(callback) {
+      var _this2 = this;
+
+      return rxjs.of(null).pipe(operators.map(function () {
+        var value = null;
+
+        if (_this2.type === StoreType.Local) {
+          value = LocalStorageService.get(_this2.key);
+        } else if (_this2.type === StoreType.Session) {
+          value = SessionStorageService.get(_this2.key);
+        } else if (_this2.type === StoreType.Cookie) {
+          value = CookieStorageService.get(_this2.key);
+        }
+
+        if (value && typeof callback === 'function') {
+          value = callback(value);
+        }
+
+        return value;
+      }), operators.filter(function (x) {
+        return x != null;
+      }));
+    };
+
+    _proto.select$ = function select$(callback) {
       return rxjs.of();
+    };
+
+    _proto.select = function select(callback) {};
+
+    _proto.push = function push(callback) {};
+
+    _proto.reducer = function reducer(_reducer) {
+      var _this3 = this;
+
+      return function (source) {
+        return rxjs.defer(function () {
+          return source.pipe(operators.map(function (data) {
+            if (typeof _reducer === 'function') {
+              _this3.state = function (draft) {
+                draft.error = null;
+
+                _reducer(data, draft);
+
+                draft.busy = false;
+
+                if (_this3.type === StoreType.Local) {
+                  LocalStorageService.set(_this3.key, draft);
+                }
+
+                if (_this3.type === StoreType.Session) {
+                  SessionStorageService.set(_this3.key, draft);
+                }
+
+                if (_this3.type === StoreType.Cookie) {
+                  CookieStorageService.set(_this3.key, draft, 365);
+                }
+              };
+            }
+
+            return data;
+          }));
+        });
+      };
+    };
+
+    _proto.catchState = function catchState(errorReducer) {
+      var _this4 = this;
+
+      return function (source) {
+        return rxjs.defer(function () {
+          return source.pipe(operators.catchError(function (error) {
+            _this4.state = function (draft) {
+              draft.error = error;
+              draft.busy = false;
+            };
+
+            if (typeof errorReducer === 'function') {
+              error = errorReducer(error);
+            } else {
+              error = null;
+            }
+
+            return error ? rxjs.of(error) : rxjs.of();
+          }));
+        });
+      };
     };
 
     _createClass(Store, [{
       key: "state",
       get: function get() {
-        return this.selectState(function (draft) {
+        return this.select(function (draft) {
           return draft;
         });
       },
       set: function set(callback) {
-        this.setState(callback);
+        this.push(callback);
       }
     }]);
 
@@ -794,19 +739,38 @@
   function useStore(state, type, key) {
     var store = new Store(state, type, key);
     return {
-      busyState$: function busyState$() {
-        return _busyState$(store);
-      },
-      setState: setState(store),
-      reduceState: reduceState(store),
-      selectState: store.selectState,
-      selectState$: store.selectState$,
-      cachedState$: function cachedState$(callback) {
-        return _cachedState$(store, callback);
-      },
-      setError: setError(store),
-      catchErrorState: catchErrorState(store),
-      state$: store.state$
+      state$: store.state$,
+      busy$: store.busy$.bind(store),
+      cached$: store.cached$.bind(store),
+      select$: store.select$.bind(store),
+      select: store.select.bind(store),
+      push: store.push.bind(store),
+      reducer: store.reducer.bind(store),
+      catchState: store.catchState.bind(store)
+    };
+  }
+
+  function makeSetState(state) {
+    return function (callback) {
+      state.next(immer.produce(state.getValue(), function (draft) {
+        if (typeof callback === 'function') {
+          callback(draft);
+        }
+
+        return draft;
+      }));
+    };
+  }
+
+  function makeSelectState(state) {
+    return function (callback) {
+      return callback(state.getValue());
+    };
+  }
+
+  function makeSelectState$(state) {
+    return function (callback) {
+      return state.pipe(operators.map(callback), operators.distinctUntilChanged());
     };
   }
 
@@ -1508,7 +1472,7 @@
     ApiService.addItem$ = function addItem$(url, item) {
       var id = new Date().valueOf();
 
-      if (Math.random() < 0.25) {
+      if (Math.random() < 0.3) {
         return rxjs.of(1).pipe(operators.delay(DELAY * Math.random()), operators.switchMap(function () {
           return rxjs.throwError("simulated error " + id);
         }));
@@ -1539,51 +1503,51 @@
     todolist: []
   }, StoreType.Session, 'todolist'),
       state$ = _useStore.state$,
-      busyState$ = _useStore.busyState$,
-      cachedState$ = _useStore.cachedState$,
-      reduceState$1 = _useStore.reduceState,
-      catchErrorState$1 = _useStore.catchErrorState;
+      busy$ = _useStore.busy$,
+      cached$ = _useStore.cached$,
+      reducer = _useStore.reducer,
+      catchState = _useStore.catchState;
 
   var TodoService = function () {
     function TodoService() {}
 
     TodoService.loadWithCache$ = function loadWithCache$() {
-      return busyState$().pipe(operators.switchMap(function () {
-        return rxjs.merge(cachedState$(function (state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return rxjs.merge(cached$(function (state) {
           return state.todolist;
-        }), ApiService.load$('url')).pipe(reduceState$1(function (todolist, state) {
+        }), ApiService.load$('url')).pipe(reducer(function (todolist, state) {
           return state.todolist = todolist;
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
     TodoService.load$ = function load$() {
-      return busyState$().pipe(operators.switchMap(function () {
-        return ApiService.load$('url').pipe(reduceState$1(function (todolist, state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return ApiService.load$('url').pipe(reducer(function (todolist, state) {
           return state.todolist = todolist;
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
     TodoService.addItem$ = function addItem$() {
-      return busyState$().pipe(operators.switchMap(function () {
-        return ApiService.addItem$('url').pipe(reduceState$1(function (item, state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return ApiService.addItem$('url').pipe(reducer(function (item, state) {
           state.todolist.push(item);
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
     TodoService.clearItems$ = function clearItems$() {
-      return busyState$().pipe(operators.switchMap(function () {
-        return ApiService.clearItems$('url').pipe(reduceState$1(function (items, state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return ApiService.clearItems$('url').pipe(reducer(function (items, state) {
           return state.todolist = items;
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
     TodoService.removeItem$ = function removeItem$(id) {
-      return busyState$().pipe(operators.switchMap(function () {
-        return ApiService.remove$('url', id).pipe(reduceState$1(function (id, state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return ApiService.remove$('url', id).pipe(reducer(function (id, state) {
           var index = state.todolist.reduce(function (p, c, i) {
             return c.id === id ? i : p;
           }, -1);
@@ -1591,13 +1555,13 @@
           if (index !== -1) {
             state.todolist.splice(index, 1);
           }
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
     TodoService.toggleCompleted$ = function toggleCompleted$(item) {
-      return busyState$().pipe(operators.switchMap(function () {
-        return ApiService.patch$('url', item).pipe(reduceState$1(function (item, state) {
+      return busy$().pipe(operators.switchMap(function () {
+        return ApiService.patch$('url', item).pipe(reducer(function (item, state) {
           var stateItem = state.todolist.find(function (x) {
             return x.id === item.id;
           });
@@ -1605,7 +1569,7 @@
           if (stateItem) {
             stateItem.completed = !stateItem.completed;
           }
-        }), catchErrorState$1(console.log));
+        }), catchState(console.log));
       }));
     };
 
