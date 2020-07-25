@@ -1,16 +1,20 @@
-export default class SessionStorageService {
+import { ReplaySubject } from "rxjs";
+import StorageService from "./storage.service";
+export default class SessionStorageService extends StorageService {
     static clear() {
-        if (this.isSessionStorageSupported()) {
+        if (this.isSupported()) {
             sessionStorage.clear();
+            this.items$.next(this.toArray());
         }
     }
     static delete(name) {
-        if (this.isSessionStorageSupported()) {
+        if (this.isSupported()) {
             sessionStorage.removeItem(name);
+            this.items$.next(this.toArray());
         }
     }
     static exist(name) {
-        if (this.isSessionStorageSupported()) {
+        if (this.isSupported()) {
             return sessionStorage.getItem(name) !== undefined;
         }
         else {
@@ -18,61 +22,64 @@ export default class SessionStorageService {
         }
     }
     static get(name) {
+        return this.decode(this.getRaw(name));
+    }
+    static set(name, value) {
+        this.setRaw(name, this.encode(value));
+    }
+    static getRaw(name) {
         let value = null;
-        if (this.isSessionStorageSupported()) {
-            try {
-                const item = sessionStorage.getItem(name);
-                if (item != null) {
-                    value = JSON.parse(item);
-                }
-            }
-            catch (error) {
-                console.log('SessionStorageService.get.error parsing', name, error);
-            }
+        if (this.isSupported()) {
+            value = sessionStorage.getItem(name);
         }
         return value;
     }
-    static set(name, value) {
-        if (this.isSessionStorageSupported()) {
-            try {
-                const cache = new Map();
-                const json = JSON.stringify(value, function (key, value) {
-                    if (typeof value === 'object' && value !== null) {
-                        if (cache.has(value)) {
-                            // Circular reference found, discard key
-                            return;
-                        }
-                        cache.set(value, true);
-                    }
-                    return value;
-                });
-                sessionStorage.setItem(name, json);
-            }
-            catch (error) {
-                console.log('SessionStorageService.set.error serializing', name, value, error);
-            }
+    static setRaw(name, value) {
+        if (value && this.isSupported()) {
+            sessionStorage.setItem(name, value);
+            this.items$.next(this.toArray());
         }
     }
-    static isSessionStorageSupported() {
+    static toArray() {
+        return this.toRawArray().map(x => {
+            x.value = this.decode(x.value);
+            return x;
+        });
+    }
+    static toRawArray() {
+        if (this.isSupported()) {
+            return Object.keys(sessionStorage).map(key => {
+                return {
+                    name: key,
+                    value: this.getRaw(key),
+                };
+            });
+        }
+        else {
+            return [];
+        }
+    }
+    static isSupported() {
         if (this.supported) {
             return true;
         }
+        return StorageService.isSupported('sessionStorage');
+        /*
         let supported = false;
         try {
             supported = 'sessionStorage' in window && sessionStorage !== null;
             if (supported) {
                 sessionStorage.setItem('test', '1');
                 sessionStorage.removeItem('test');
-            }
-            else {
+            } else {
                 supported = false;
             }
-        }
-        catch (error) {
+        } catch (error) {
             supported = false;
         }
         this.supported = supported;
         return supported;
+        */
     }
 }
-SessionStorageService.supported = false;
+SessionStorageService.items$ = new ReplaySubject(1);

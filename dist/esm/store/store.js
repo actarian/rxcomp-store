@@ -1,87 +1,15 @@
 import { produce } from 'immer';
-import { BehaviorSubject, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, defer, of } from 'rxjs';
+import { catchError, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import CookieStorageService from '../storage/cookie-storage.service';
 import LocalStorageService from '../storage/local-storage.service';
 import SessionStorageService from '../storage/session-storage.service';
-function busy(store) {
-    return of(null).pipe(filter(() => {
-        let busy;
-        store.state = (draft) => {
-            busy = draft.busy;
-            if (!busy) {
-                draft.busy = true;
-                draft.error = null;
-            }
-        };
-        return !busy;
-    }));
-}
-function setState(store) {
-    return (callback) => {
-        let output;
-        store.state = (draft) => {
-            draft.error = null;
-            output = callback(draft);
-            draft.busy = false;
-            if (store.type === StoreType.Local) {
-                LocalStorageService.set(store.key, draft);
-                // console.log('setState.LocalStorageService.set', store.key, draft);
-            }
-            if (store.type === StoreType.Session) {
-                SessionStorageService.set(store.key, draft);
-                // console.log('setState.SessionStorageService.set', store.key, draft);
-            }
-        };
-        return output;
-    };
-}
-function setError(store) {
-    return (error) => {
-        store.state = (draft) => {
-            draft.error = error;
-            draft.busy = false;
-        };
-        return of();
-    };
-}
-function getState(store, callback) {
-    return of(null).pipe(map(() => {
-        let value = null;
-        if (store.type === StoreType.Local) {
-            value = LocalStorageService.get(store.key);
-            if (value && typeof callback === 'function') {
-                value = callback(value);
-            }
-            // console.log('getLocal.LocalStorageService.get', store.key, value);
-        }
-        else if (store.type === StoreType.Session) {
-            value = SessionStorageService.get(store.key);
-            if (value && typeof callback === 'function') {
-                value = callback(value);
-            }
-            // console.log('getLocal.SessionStorageService.get', store.key, value);
-        }
-        return value;
-    }), filter((x) => {
-        // console.log('value', x);
-        return x !== null;
-    }));
-}
-function makeSetState(state) {
-    return (callback) => {
-        state.next(produce(state.getValue(), (draft) => {
-            if (typeof callback === 'function') {
-                callback(draft);
-            }
-            return draft;
-        }));
-    };
-}
 export var StoreType;
 (function (StoreType) {
     StoreType[StoreType["Memory"] = 1] = "Memory";
     StoreType[StoreType["Session"] = 2] = "Session";
     StoreType[StoreType["Local"] = 3] = "Local";
+    StoreType[StoreType["Cookie"] = 4] = "Cookie";
 })(StoreType || (StoreType = {}));
 ;
 export class Store {
@@ -91,21 +19,155 @@ export class Store {
         state.busy = false;
         state.error = null;
         const state_ = new BehaviorSubject(state);
-        this.setState = makeSetState(state_);
+        this.next = makeNext(state_);
+        this.nextError = makeNextError(state_);
+        this.select = makeSelect(state_);
         this.state$ = state_.asObservable();
     }
-    set state(callback) {
-        this.setState(callback);
+    get state() {
+        return this.select((draft) => draft);
     }
-    setState(callback) { }
+    set state(callback) {
+        this.next(callback);
+    }
+    busy$() {
+        return of(null).pipe(filter(() => {
+            let busy = this.select(state => state.busy);
+            if (!busy) {
+                this.state = (draft) => {
+                    draft.busy = true;
+                    draft.error = null;
+                };
+                return true;
+            }
+            else {
+                return false;
+            }
+        }));
+    }
+    cached$(callback) {
+        return of(null).pipe(map(() => {
+            let value = null;
+            if (this.type === StoreType.Local) {
+                value = LocalStorageService.get(this.key);
+            }
+            else if (this.type === StoreType.Session) {
+                value = SessionStorageService.get(this.key);
+            }
+            else if (this.type === StoreType.Cookie) {
+                value = CookieStorageService.get(this.key);
+            }
+            if (value && typeof callback === 'function') {
+                value = callback(value);
+            }
+            return value;
+        }), filter((x) => {
+            // console.log('value', x);
+            return x != null;
+        }));
+    }
+    select$(callback) {
+        return this.state$.pipe(map(callback), distinctUntilChanged());
+    }
+    select(callback) { }
+    next(callback) { }
+    nextError(error) {
+        return of();
+    }
+    reducer(reducer) {
+        return (source) => defer(() => {
+            // initialize global values
+            return source.pipe(map((data) => {
+                if (typeof reducer === 'function') {
+                    this.state = (draft) => {
+                        draft.error = null;
+                        reducer(data, draft);
+                        draft.busy = false;
+                        if (this.type === StoreType.Local) {
+                            LocalStorageService.set(this.key, draft);
+                            // console.log('reducer.LocalStorageService.set', this.key, draft);
+                        }
+                        if (this.type === StoreType.Session) {
+                            SessionStorageService.set(this.key, draft);
+                            // console.log('reducer.SessionStorageService.set', this.key, draft);
+                        }
+                        if (this.type === StoreType.Cookie) {
+                            CookieStorageService.set(this.key, draft, 365);
+                            // console.log('reducer.CookieStorageService.set', this.key, draft);
+                        }
+                    };
+                }
+                return data;
+            }));
+        });
+    }
+    ;
+    catchState(errorReducer) {
+        return (source) => defer(() => {
+            // initialize global values
+            return source.pipe(catchError(error => {
+                this.state = (draft) => {
+                    draft.error = error;
+                    draft.busy = false;
+                };
+                if (typeof errorReducer === 'function') {
+                    error = errorReducer(error);
+                }
+                else {
+                    error = null;
+                }
+                return (error ? of(error) : of());
+            }));
+        });
+    }
+    ;
 }
 export function useStore(state, type, key) {
     const store = new Store(state, type, key);
     return {
-        busy: () => busy(store),
-        getState: (callback) => getState(store, callback),
-        setState: setState(store),
-        setError: setError(store),
         state$: store.state$,
+        busy$: store.busy$.bind(store),
+        cached$: store.cached$.bind(store),
+        select$: store.select$.bind(store),
+        select: store.select.bind(store),
+        next: store.next.bind(store),
+        nextError: store.nextError.bind(store),
+        reducer: store.reducer.bind(store),
+        catchState: store.catchState.bind(store),
+    };
+}
+/*
+export function makeNext<T, R>(callback: (data: T) => R) : OperatorFunction<T, R>
+export function makeNext<T extends { data: any }>() : OperatorFunction<T, T['data']>
+export function makeNext<T>() : OperatorFunction<T, T>
+export function makeNext<T extends { data? : undefined } | { data: R }, R>(callback?: (data: T) => R) {
+  return (source: Observable<T>) => source.pipe(
+    map(value => typeof callback === 'function' ? callback(value) : (value.data ? value.data : value)),
+  );
+}
+*/
+function makeNext(state) {
+    return (callback) => {
+        state.next(produce(state.getValue(), (draft) => {
+            if (typeof callback === 'function') {
+                callback(draft);
+            }
+            return draft;
+        }));
+    };
+}
+function makeNextError(state) {
+    return (error) => {
+        state.next(produce(state.getValue(), (draft) => {
+            draft.error = error;
+            draft.busy = false;
+            return draft;
+        }));
+        return of(error);
+    };
+}
+function makeSelect(state) {
+    return (callback) => {
+        return callback(state.getValue());
     };
 }

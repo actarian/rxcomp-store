@@ -68,7 +68,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">LocalStorageService</span>
+						<a href="storageservice.html" class="tsd-signature-type">StorageService</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">LocalStorageService</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,18 +84,25 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#supported" class="tsd-kind-icon">supported</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#items_" class="tsd-kind-icon">items$</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="localstorageservice.html#supported" class="tsd-kind-icon">supported</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#clear" class="tsd-kind-icon">clear</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="localstorageservice.html#decode" class="tsd-kind-icon">decode</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#delete" class="tsd-kind-icon">delete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="localstorageservice.html#encode" class="tsd-kind-icon">encode</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#exist" class="tsd-kind-icon">exist</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#islocalstoragesupported" class="tsd-kind-icon">is<wbr>Local<wbr>Storage<wbr>Supported</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#getraw" class="tsd-kind-icon">get<wbr>Raw</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-static"><a href="localstorageservice.html#issupported" class="tsd-kind-icon">is<wbr>Supported</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#setraw" class="tsd-kind-icon">set<wbr>Raw</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#toarray" class="tsd-kind-icon">to<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="localstorageservice.html#torawarray" class="tsd-kind-icon">to<wbr>Raw<wbr>Array</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,12 +111,23 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="items_" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> items$</h3>
+					<div class="tsd-signature tsd-kind-icon">items$<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReplaySubject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new ReplaySubject(1)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L6">src/storage/local-storage.service.ts:6</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 					<a name="supported" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> supported</h3>
 					<div class="tsd-signature tsd-kind-icon">supported<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="storageservice.html">StorageService</a>.<a href="storageservice.html#supported">supported</a></p>
 						<ul>
-							<li>Defined in src/storage/local-storage.service.ts:3</li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/storage.service.ts#L9">src/storage/storage.service.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -121,10 +144,34 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:5</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L8">src/storage/local-storage.service.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="decode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> decode</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">decode<span class="tsd-signature-symbol">(</span>encodedJson<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="storageservice.html">StorageService</a>.<a href="storageservice.html#decode">decode</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/storage.service.ts#L32">src/storage/storage.service.ts:32</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>encodedJson: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -138,7 +185,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:11</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L15">src/storage/local-storage.service.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -148,6 +195,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="encode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> encode</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">encode<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="storageservice.html">StorageService</a>.<a href="storageservice.html#encode">encode</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/storage.service.ts#L11">src/storage/storage.service.ts:11</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -161,7 +232,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:17</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L22">src/storage/local-storage.service.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -184,7 +255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:25</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L30">src/storage/local-storage.service.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -198,16 +269,40 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="islocalstoragesupported" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Local<wbr>Storage<wbr>Supported</h3>
+					<a name="getraw" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Raw</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Local<wbr>Storage<wbr>Supported<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Raw<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:61</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L38">src/storage/local-storage.service.ts:38</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-static">
+					<a name="issupported" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Supported</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Supported<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="storageservice.html">StorageService</a>.<a href="storageservice.html#issupported">isSupported</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L73">src/storage/local-storage.service.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -224,7 +319,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/storage/local-storage.service.ts:40</li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L34">src/storage/local-storage.service.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -237,6 +332,66 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="setraw" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> set<wbr>Raw</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Raw<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L46">src/storage/local-storage.service.ts:46</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="toarray" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> to<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Array<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L53">src/storage/local-storage.service.ts:53</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="torawarray" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> to<wbr>Raw<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Raw<wbr>Array<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/223b041/src/storage/local-storage.service.ts#L60">src/storage/local-storage.service.ts:60</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -268,8 +423,10 @@
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>

@@ -18,8 +18,8 @@ export class TodoService {
 			switchMap(() => merge(cached$((state: any) => state.todolist) as Observable<ITodoItem[]>, ApiService.load$('url')).pipe(
 				reducer((todolist: ITodoItem[], state: any) => state.todolist = todolist),
 				catchState(console.log),
-				// tap((todolist: ITodoItem[]) => setState((state: any) => (state.todolist = todolist))),
-				// catchError((error: any) => setError(error))
+				// tap((todolist: ITodoItem[]) => next((state: any) => (state.todolist = todolist))),
+				// catchError((error: any) => nextError(error))
 			)));
 	}
 
@@ -28,8 +28,6 @@ export class TodoService {
 			switchMap(() => ApiService.load$('url').pipe(
 				reducer((todolist: ITodoItem[], state: any) => state.todolist = todolist),
 				catchState(console.log),
-				// tap((todolist: ITodoItem[]) => setState((state: any) => (state.todolist = todolist))),
-				// catchError((error: any) => setError(error))
 			)));
 	}
 
@@ -40,8 +38,6 @@ export class TodoService {
 					state.todolist.push(item)
 				}),
 				catchState(console.log),
-				// tap((item) => setState((state: any) => { state.todolist.push(item); })),
-				// catchError((error: any) => setError(error))
 			))
 		);
 	}
@@ -51,8 +47,6 @@ export class TodoService {
 			switchMap(() => ApiService.clearItems$('url').pipe(
 				reducer((items: ITodoItem[], state: any) => state.todolist = items),
 				catchState(console.log),
-				// tap((items) => setState((state: any) => state.todolist = items)),
-				// catchError((error: any) => setError(error))
 			))
 		);
 	}
@@ -69,17 +63,6 @@ export class TodoService {
 					}
 				}),
 				catchState(console.log),
-				/*
-				tap((id) => setState((state: any) => {
-					const index = state.todolist.reduce((p: number, c: ITodoItem, i: number) => {
-						return c.id === id ? i : p;
-					}, -1);
-					if (index !== -1) {
-						state.todolist.splice(index, 1);
-					}
-				})),
-				catchError((error: any) => setError(error))
-				*/
 			))
 		);
 	}
@@ -94,15 +77,6 @@ export class TodoService {
 					}
 				}),
 				catchState(console.log),
-				/*
-				tap((item) => setState((state: any) => {
-					const stateItem = state.todolist.find((x: ITodoItem) => x.id === item.id);
-					if (stateItem) {
-						stateItem.completed = !stateItem.completed;
-					}
-				})),
-				catchError((error: any) => setError(error))
-				*/
 			)));
 	}
 

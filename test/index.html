@@ -17,10 +17,6 @@
 				<span class="remove" (click)="removeItem(item.id)">X</span>
 			</div>
 			<div class="error" *if="state.error" [innerHTML]="state.error"></div>
-			<!--
-			<json-component [debug]="state"></json-component>
-			<counter-component></counter-component>
-			-->
 			<session-storage-component></session-storage-component>
 			<local-storage-component></local-storage-component>
 			<cookie-storage-component></cookie-storage-component>

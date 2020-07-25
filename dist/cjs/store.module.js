@@ -2,8 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var rxcomp_1 = require("rxcomp");
-var factories = [];
-var pipes = [];
+var json_component_1 = tslib_1.__importDefault(require("./json/json.component"));
+var json_pipe_1 = tslib_1.__importDefault(require("./json/json.pipe"));
+var cookie_storage_component_1 = tslib_1.__importDefault(require("./storage/cookie-storage.component"));
+var local_storage_component_1 = tslib_1.__importDefault(require("./storage/local-storage.component"));
+var session_storage_component_1 = tslib_1.__importDefault(require("./storage/session-storage.component"));
+var factories = [
+    json_component_1.default,
+    cookie_storage_component_1.default,
+    local_storage_component_1.default,
+    session_storage_component_1.default,
+];
+var pipes = [
+    json_pipe_1.default,
+];
 /**
  * StoreModule Class.
  * @example

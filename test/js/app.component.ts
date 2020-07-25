@@ -1,7 +1,6 @@
 import { Component, getContext, IFactoryMeta } from 'rxcomp';
 import { first, takeUntil } from 'rxjs/operators';
-import { LocalStorageService, SessionStorageService } from '../../dist/cjs/rxcomp-store';
-import { CookieStorageService } from '../../src/rxcomp-store';
+import { CookieStorageService, LocalStorageService, SessionStorageService } from '../../src/rxcomp-store';
 import { ITodoItem } from './api/api.service';
 import { TodoService } from './todo/todo.service';
 

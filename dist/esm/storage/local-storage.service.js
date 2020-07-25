@@ -1,16 +1,20 @@
-export default class LocalStorageService {
+import { ReplaySubject } from "rxjs";
+import StorageService from "./storage.service";
+export default class LocalStorageService extends StorageService {
     static clear() {
-        if (this.isLocalStorageSupported()) {
+        if (this.isSupported()) {
             localStorage.clear();
+            this.items$.next(this.toArray());
         }
     }
     static delete(name) {
-        if (this.isLocalStorageSupported()) {
+        if (this.isSupported()) {
             localStorage.removeItem(name);
+            this.items$.next(this.toArray());
         }
     }
     static exist(name) {
-        if (this.isLocalStorageSupported()) {
+        if (this.isSupported()) {
             return localStorage.getItem(name) !== undefined;
         }
         else {
@@ -18,61 +22,64 @@ export default class LocalStorageService {
         }
     }
     static get(name) {
+        return this.decode(this.getRaw(name));
+    }
+    static set(name, value) {
+        this.setRaw(name, this.encode(value));
+    }
+    static getRaw(name) {
         let value = null;
-        if (this.isLocalStorageSupported()) {
-            try {
-                const item = localStorage.getItem(name);
-                if (item != null) {
-                    value = JSON.parse(item);
-                }
-            }
-            catch (error) {
-                console.log('LocalStorageService.get.error parsing', name, error);
-            }
+        if (this.isSupported()) {
+            value = localStorage.getItem(name);
         }
         return value;
     }
-    static set(name, value) {
-        if (this.isLocalStorageSupported()) {
-            try {
-                const cache = new Map();
-                const json = JSON.stringify(value, function (key, value) {
-                    if (typeof value === 'object' && value !== null) {
-                        if (cache.has(value)) {
-                            // Circular reference found, discard key
-                            return;
-                        }
-                        cache.set(value, true);
-                    }
-                    return value;
-                });
-                localStorage.setItem(name, json);
-            }
-            catch (error) {
-                console.log('LocalStorageService.set.error serializing', name, value, error);
-            }
+    static setRaw(name, value) {
+        if (value && this.isSupported()) {
+            localStorage.setItem(name, value);
+            this.items$.next(this.toArray());
         }
     }
-    static isLocalStorageSupported() {
+    static toArray() {
+        return this.toRawArray().map(x => {
+            x.value = this.decode(x.value);
+            return x;
+        });
+    }
+    static toRawArray() {
+        if (this.isSupported()) {
+            return Object.keys(localStorage).map(key => {
+                return {
+                    name: key,
+                    value: this.getRaw(key),
+                };
+            });
+        }
+        else {
+            return [];
+        }
+    }
+    static isSupported() {
         if (this.supported) {
             return true;
         }
+        return StorageService.isSupported('localStorage');
+        /*
         let supported = false;
         try {
             supported = 'localStorage' in window && localStorage !== null;
             if (supported) {
                 localStorage.setItem('test', '1');
                 localStorage.removeItem('test');
-            }
-            else {
+            } else {
                 supported = false;
             }
-        }
-        catch (error) {
+        } catch (error) {
             supported = false;
         }
         this.supported = supported;
         return supported;
+        */
     }
 }
-LocalStorageService.supported = false;
+LocalStorageService.items$ = new ReplaySubject(1);
