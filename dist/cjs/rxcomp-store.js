@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var json_component_1 = require("./json/json.component");
-Object.defineProperty(exports, "JsonComponent", { enumerable: true, get: function () { return json_component_1.default; } });
 var cookie_storage_component_1 = require("./storage/cookie-storage.component");
 Object.defineProperty(exports, "CookieStorageComponent", { enumerable: true, get: function () { return cookie_storage_component_1.default; } });
 var cookie_storage_service_1 = require("./storage/cookie-storage.service");

@@ -29,32 +29,6 @@
     subClass.__proto__ = superClass;
   }
 
-  var JsonComponent = function (_Component) {
-    _inheritsLoose(JsonComponent, _Component);
-
-    function JsonComponent() {
-      var _this;
-
-      _this = _Component.apply(this, arguments) || this;
-      _this.active = false;
-      return _this;
-    }
-
-    var _proto = JsonComponent.prototype;
-
-    _proto.onToggle = function onToggle() {
-      this.active = !this.active;
-      this.pushChanges();
-    };
-
-    return JsonComponent;
-  }(rxcomp.Component);
-  JsonComponent.meta = {
-    selector: 'json-component',
-    inputs: ['item'],
-    template: "\n\t\t<div class=\"rxc-block\">\n\t\t\t<div class=\"rxc-head\">\n\t\t\t\t<span class=\"rxc-head__title\" (click)=\"onToggle()\">\n\t\t\t\t\t<span *if=\"!active\">+ json </span>\n\t\t\t\t\t<span *if=\"active\">- json </span>\n\t\t\t\t\t<span [innerHTML]=\"item\"></span>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<ul class=\"rxc-list\" *if=\"active\">\n\t\t\t\t<li class=\"rxc-list__item\">\n\t\t\t\t\t<span class=\"rxc-list__value\" [innerHTML]=\"item | json\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>"
-  };
-
   var StorageService = function () {
     function StorageService() {}
 
@@ -526,37 +500,8 @@
     template: "\n\t\t<div class=\"rxc-block\">\n\t\t\t<div class=\"rxc-head\">\n\t\t\t\t<span class=\"rxc-head__title\" (click)=\"onToggle()\">\n\t\t\t\t\t<span *if=\"!active\">+ sessionStorage</span>\n\t\t\t\t\t<span *if=\"active\">- sessionStorage</span>\n\t\t\t\t\t<span [innerHTML]=\"' {' + items.length + ')'\"></span>\n\t\t\t\t</span>\n\t\t\t\t<span class=\"rxc-head__remove\" (click)=\"onClear()\">x</span>\n\t\t\t</div>\n\t\t\t<ul class=\"rxc-list\" *if=\"active\">\n\t\t\t\t<li class=\"rxc-list__item\" *for=\"let item of items\">\n\t\t\t\t\t<span class=\"rxc-list__name\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t\t<span class=\"rxc-list__value\" [innerHTML]=\"item.value | json\"></span>\n\t\t\t\t\t<span class=\"rxc-list__remove\" (click)=\"onRemove(item)\">x</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>"
   };
 
-  var JsonPipe = function (_Pipe) {
-    _inheritsLoose(JsonPipe, _Pipe);
-
-    function JsonPipe() {
-      return _Pipe.apply(this, arguments) || this;
-    }
-
-    JsonPipe.transform = function transform(value) {
-      var cache = new Map();
-      var json = JSON.stringify(value, function (key, value) {
-        if (typeof value === 'object' && value != null) {
-          if (cache.has(value)) {
-            return '#ref';
-          }
-
-          cache.set(value, true);
-        }
-
-        return value;
-      }, 2);
-      return json;
-    };
-
-    return JsonPipe;
-  }(rxcomp.Pipe);
-  JsonPipe.meta = {
-    name: 'json'
-  };
-
-  var factories = [JsonComponent, CookieStorageComponent, LocalStorageComponent, SessionStorageComponent];
-  var pipes = [JsonPipe];
+  var factories = [CookieStorageComponent, LocalStorageComponent, SessionStorageComponent];
+  var pipes = [];
 
   var StoreModule = function (_Module) {
     _inheritsLoose(StoreModule, _Module);
@@ -971,32 +916,6 @@
     selector: '[app-component]'
   };
 
-  var CounterComponent = function (_Component) {
-    _inheritsLoose(CounterComponent, _Component);
-
-    function CounterComponent() {
-      return _Component.apply(this, arguments) || this;
-    }
-
-    var _proto = CounterComponent.prototype;
-
-    _proto.onInit = function onInit() {
-      var _this = this;
-
-      TodoService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        _this.todolist = state.todolist;
-
-        _this.pushChanges();
-      });
-    };
-
-    return CounterComponent;
-  }(rxcomp.Component);
-  CounterComponent.meta = {
-    selector: 'counter-component',
-    template: "#items <span [innerHTML]=\"todolist.length\"></span>"
-  };
-
   var AppModule = function (_Module) {
     _inheritsLoose(AppModule, _Module);
 
@@ -1008,7 +927,7 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, StoreModule],
-    declarations: [CounterComponent],
+    declarations: [],
     bootstrap: AppComponent
   };
 

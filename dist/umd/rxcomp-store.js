@@ -32,32 +32,6 @@
     subClass.__proto__ = superClass;
   }
 
-  var JsonComponent = /*#__PURE__*/function (_Component) {
-    _inheritsLoose(JsonComponent, _Component);
-
-    function JsonComponent() {
-      var _this;
-
-      _this = _Component.apply(this, arguments) || this;
-      _this.active = false;
-      return _this;
-    }
-
-    var _proto = JsonComponent.prototype;
-
-    _proto.onToggle = function onToggle() {
-      this.active = !this.active;
-      this.pushChanges();
-    };
-
-    return JsonComponent;
-  }(rxcomp.Component);
-  JsonComponent.meta = {
-    selector: 'json-component',
-    inputs: ['item'],
-    template: "\n\t\t<div class=\"rxc-block\">\n\t\t\t<div class=\"rxc-head\">\n\t\t\t\t<span class=\"rxc-head__title\" (click)=\"onToggle()\">\n\t\t\t\t\t<span *if=\"!active\">+ json </span>\n\t\t\t\t\t<span *if=\"active\">- json </span>\n\t\t\t\t\t<span [innerHTML]=\"item\"></span>\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<ul class=\"rxc-list\" *if=\"active\">\n\t\t\t\t<li class=\"rxc-list__item\">\n\t\t\t\t\t<span class=\"rxc-list__value\" [innerHTML]=\"item | json\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>"
-  };
-
   var StorageService = /*#__PURE__*/function () {
     function StorageService() {}
 
@@ -570,38 +544,8 @@
     template: "\n\t\t<div class=\"rxc-block\">\n\t\t\t<div class=\"rxc-head\">\n\t\t\t\t<span class=\"rxc-head__title\" (click)=\"onToggle()\">\n\t\t\t\t\t<span *if=\"!active\">+ sessionStorage</span>\n\t\t\t\t\t<span *if=\"active\">- sessionStorage</span>\n\t\t\t\t\t<span [innerHTML]=\"' {' + items.length + ')'\"></span>\n\t\t\t\t</span>\n\t\t\t\t<span class=\"rxc-head__remove\" (click)=\"onClear()\">x</span>\n\t\t\t</div>\n\t\t\t<ul class=\"rxc-list\" *if=\"active\">\n\t\t\t\t<li class=\"rxc-list__item\" *for=\"let item of items\">\n\t\t\t\t\t<span class=\"rxc-list__name\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t\t<span class=\"rxc-list__value\" [innerHTML]=\"item.value | json\"></span>\n\t\t\t\t\t<span class=\"rxc-list__remove\" (click)=\"onRemove(item)\">x</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>"
   };
 
-  var JsonPipe = /*#__PURE__*/function (_Pipe) {
-    _inheritsLoose(JsonPipe, _Pipe);
-
-    function JsonPipe() {
-      return _Pipe.apply(this, arguments) || this;
-    }
-
-    JsonPipe.transform = function transform(value) {
-      var cache = new Map();
-      var json = JSON.stringify(value, function (key, value) {
-        if (typeof value === 'object' && value != null) {
-          if (cache.has(value)) {
-            // Circular reference found, discard key
-            return '#ref';
-          }
-
-          cache.set(value, true);
-        }
-
-        return value;
-      }, 2);
-      return json;
-    };
-
-    return JsonPipe;
-  }(rxcomp.Pipe);
-  JsonPipe.meta = {
-    name: 'json'
-  };
-
-  var factories = [JsonComponent, CookieStorageComponent, LocalStorageComponent, SessionStorageComponent];
-  var pipes = [JsonPipe];
+  var factories = [CookieStorageComponent, LocalStorageComponent, SessionStorageComponent];
+  var pipes = [];
   /**
    * StoreModule Class.
    * @example
@@ -854,7 +798,6 @@
 
   exports.CookieStorageComponent = CookieStorageComponent;
   exports.CookieStorageService = CookieStorageService;
-  exports.JsonComponent = JsonComponent;
   exports.LocalStorageComponent = LocalStorageComponent;
   exports.LocalStorageService = LocalStorageService;
   exports.SessionStorageComponent = SessionStorageComponent;

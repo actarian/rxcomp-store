@@ -1,4 +1,3 @@
-export { default as JsonComponent } from './json/json.component';
 export { default as CookieStorageComponent } from './storage/cookie-storage.component';
 export { default as CookieStorageService } from './storage/cookie-storage.service';
 export { default as LocalStorageComponent } from './storage/local-storage.component';

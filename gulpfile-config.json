@@ -71,11 +71,6 @@
             "rxcomp": "rxcomp"
           },
           "name": "rxcomp.form"
-        },
-        {
-          "input": "test/css/rxcomp.scss",
-          "output": "dist/rxcomp-store.css",
-          "minify": true
         }
       ]
     }

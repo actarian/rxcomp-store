@@ -1,7 +1,6 @@
 import { CoreModule, IModuleMeta, Module } from 'rxcomp';
 import { StoreModule } from '../../src/rxcomp-store';
 import AppComponent from './app.component';
-import CounterComponent from './counter/counter.component';
 
 export default class AppModule extends Module {
 
@@ -11,7 +10,6 @@ export default class AppModule extends Module {
 			StoreModule
 		],
 		declarations: [
-			CounterComponent,
 		],
 		bootstrap: AppComponent,
 	};
