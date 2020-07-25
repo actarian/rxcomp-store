@@ -19,7 +19,7 @@ rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex
 > [RxComp Store Api](https://actarian.github.io/rxcomp-store/api/)  
 > [RxComp Sotre Codesandbox](https://codesandbox.io/s/state-with-immer-h297m)  
 
-![](https://images.unsplash.com/photo-1505238680356-667803448bb6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80)  
+![](https://rawcdn.githack.com/actarian/rxcomp-store/master/docs/img/rxcomp-store-demo.jpg?token=AAOBSISYZJXZNFFWAPGOLYC7DQKIO)  
 
 ___
 
