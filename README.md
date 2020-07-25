@@ -2,11 +2,9 @@
 
 [![Licence](https://img.shields.io/github/license/actarian/rxcomp-store.svg)](https://github.com/actarian/rxcomp-store)
 
-[RxComp StoreModule](https://github.com/actarian/rxcomp-store) is a Reactive Store Module for RxComp library
+[RxComp Store](https://github.com/actarian/rxcomp-store) is a small Javascript module for [RxComp](https://github.com/actarian/rxcomp), developed with [Immer](https://github.com/immerjs/immer) and [RxJs](https://github.com/ReactiveX/rxjs) as a simple alternative to [Redux](https://github.com/reduxjs/redux).
 
-[RxComp](https://github.com/actarian/rxcomp) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. 
-
-If you like Angular declarative syntax but you just want go Vanilla, RxComp library come in useful.
+The store can however be used with any framework or VanillaJS. 
 
  lib & dependancy    | size
 :--------------------|:----------------------------------------------------------------------------------------------|
@@ -17,27 +15,18 @@ rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg?compression=gzip)
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg)
  
-> [RxComp Form Demo](https://actarian.github.io/rxcomp-store/)  
-> [RxComp Form Api](https://actarian.github.io/rxcomp-store/api/)  
-> [RxComp Form Codepen](https://codepen.io/actarian/pen/vYEXXPe?editors=0010)  
-___
+> [RxComp Store Demo](https://actarian.github.io/rxcomp-store/)  
+> [RxComp Store Api](https://actarian.github.io/rxcomp-store/api/)  
+> [RxComp Sotre Codesandbox](https://codesandbox.io/s/state-with-immer-h297m)  
 
-### What is included
-* Models  
-*```FormControl```, ```FormGroup```, ```FormArray```*  
-
-* Directives  
-*```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*  
-
-* Validators  
-*```EmailValidator```, ```MaxLengthValidator```, ```MaxValidator```, ```MinLengthValidator```, ```MinValidator```, ```NullValidator```, ```PatternValidator```, ```RequiredTrueValidator```, ```RequiredValidator```* 
+![](https://images.unsplash.com/photo-1505238680356-667803448bb6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80)  
 
 ___
 
 ## Installation and Usage
 
 ### ES6 via npm
-This library depend on [RxComp](https://github.com/actarian/rxcomp) and [RxJs](https://github.com/ReactiveX/rxjs)  
+This library depend on [RxComp](https://github.com/actarian/rxcomp) [Immer](https://github.com/immerjs/immer) and [RxJs](https://github.com/ReactiveX/rxjs)  
 install via npm or include via script   
 
 ```
@@ -50,9 +39,10 @@ ___
 For CDN, you can use unpkg
 
 ```html
-<script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js"></script>  
-<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/umd/rxcomp.min.js"></script>  
-<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.10/dist/umd/rxcomp-store.min.js"></script>  
+<script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
+<script src="https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
+<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/umd/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
+<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.10/dist/umd/rxcomp-store.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
 ```
 
 The global namespace for RxComp is `rxcomp`
@@ -61,7 +51,7 @@ The global namespace for RxComp is `rxcomp`
 import { CoreModule, Module } from 'rxcomp';
 ```
 
-The global namespace for RxComp StoreModule is `rxcomp.form`
+The global namespace for RxComp StoreModule is `rxcomp.store`
 
 ```javascript
 import { StoreModule } from 'rxcomp-store';
@@ -90,41 +80,140 @@ Browser.bootstrap(AppModule);
 ```
 ___
 
-### Reactive Form Definition
+### The store
+With the `useStore` factory we create the immutable store with a default value.  
+The store will be consumed by a singleton service, and honoring the [single-responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle) only a specific portion of the app data will be stored.  
 
-```javascript
-import { catchError, switchMap, tap } from 'rxjs/operators';
-import { Component } from 'rxcomp';
+```js
+import { useStore } from 'rxcomp-store';
+
+const { state$ } = useStore({ todolist: [] });
+```
+Subscribing to the `state$` observable you always get the last immutable copy of the `state` draft.
+```js
+state$.subscribe(state => this.todolist = state.todolist);
+```
+___
+
+### Reducing the store state
+The `reducer` operator accept a reducer callback with the `observable$` payload and a mutable draft of the `state` as parameter.  
+When reducer returns, an immutable copy of the state will be pushed to the `state$` observable through [Immer](https://github.com/immerjs/immer).  
+
+```js
+const { reducer } = useStore({ todolist: [] });
+
+observable$.pipe(
+  reducer((todolist, state) => state.todolist = todolist)
+);
+```
+___
+
+### Catching errors into the state
+The `catchState` operator is used to catch the error and store it in the immutable state.  
+
+```js
+const { catchState } = useStore({ todolist: [] });
+
+observable$.pipe(
+  catchState(console.log),
+);
+```
+You can then observe the state for errors.  
+
+```js
+state$.subscribe(state => this.error = state.error);
+```
+___
+
+### Setting the busy state
+The `busy$` observable will store the busy flag in the immutable state and lock future calls until the observable completes.  
+
+```js
+const { busy$ } = useStore({ todolist: [] });
+
+busy$().pipe(
+  switchMap(() => observable$),
+);
+```
+You can then observe the busy state.  
+
+```js
+state$.subscribe(state => this.busy = state.busy);
+```
+___
+
+### Loading state from Web Api Storage or Cookie
+While reloading the page, you may want to reload the previous state of the app.  
+First we have to initialize the store with a different `StoreType` (the default is `StoreType.Memory`) and give it a unique store name.  
+
+```js
 import { StoreType, useStore } from 'rxcomp-store';
 
-const { state$, busy, getState, setState, setError } = useStore({
-	todolist: [],
-}, StoreType.Memory, 'todolist');
+const { cached$ } = useStore({ todolist: [] }, 
+  StoreType.Session, 'todolist'
+);
+```
+With the `cached$` observable we can retrieve the last saved state from `sessionStorage` or `localStorage` or `cookie`.  
 
-export default class AppComponent extends Component {
+```js
+cached$((state) => state.todolist)
+```
+___
 
-    onInit() {
-        state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe((state) => {
-			this.todolist = state.todolist;
-			this.busy = state.busy;
-			this.error = state.error;
-			this.pushChanges();
-		});
-		busy().pipe(
-			switchMap(() => ApiService.load$().pipe(
-				tap((todolist: ITodoItem[]) => setState((state: any) => (state.todolist = todolist))),
-				catchError((error: any) => setError(error))
-			)));
-		))).subscribe(console.log);
-    }
+### All together
+1. busy$ mark state as busy  
+2. cached$ load data from cache  
+3. reducer reduce the state to the new state  
+4. catchState catch the error and reduce the state to the errored state.  
 
-}
+```js
+import { StoreType, useStore } from 'rxcomp-store';
 
-AppComponent.meta = {
-    selector: '[app-component]',
-};
+const { busy$, cached$, reducer, catchState } = useStore(
+  { todolist: [] },
+  StoreType.Session, 'todolist'
+);
+
+busy$().pipe(
+  switchMap(() => 
+    merge(cached$((state) => state.todolist), fromApi$).pipe(
+      reducer((todolist, state) => state.todolist = todolist),
+      catchState(console.log),
+    )
+  )
+);
+```
+
+___
+## Other methods
+
+### Querying the store state 
+The `select$` observable accept a reducer callback with an immutable copy of the `state` as parameter and returns an immutable copy of a portion of the `state` as observable.  
+
+```js
+const { select$ } = useStore({ todolist: [] });
+
+const todolist$ = select$((state) => state.todolist);
+```
+___
+### Querying with select
+The `select` method works like the `select$` observable but doesn't return an observable.  
+
+```js
+const { select } = useStore({ todolist: [] });
+
+const todolist = select((state) => state.todolist);
+```
+___
+### Setting the store state
+The `push` method accept a reducer callback with a mutable draft of the `state` as parameter.  
+When reducer returns, an immutable copy of the state will be pushed to the `state$` observable through [Immer](https://github.com/immerjs/immer).  
+It works like the `reduce` operator but doesn't return an observable.  
+
+```js
+const { push } = useStore({ todolist: [] });
+
+push((state) => state.todolist = todolist))
 ```
 ___
 ### Browser Compatibility
@@ -174,15 +263,3 @@ ___
 
 ## Release Notes
 Changelog [here](https://github.com/actarian/rxcomp-store/blob/master/CHANGELOG.md).
-
-<!-- 
-Docs Schema
-"$schema": "http://json.schemastore.org/typedoc",
-"toc": [
-	"FormAbstract",
-	"FormControl",
-	"FormAbstractCollection",
-	"FormGroup",
-	"FormArray"
-],
--->
