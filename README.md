@@ -19,7 +19,7 @@ immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0
  
 > [RxComp Store Demo](https://actarian.github.io/rxcomp-store/)  
 > [RxComp Store Api](https://actarian.github.io/rxcomp-store/api/)  
-> [RxComp Sotre Codesandbox](https://codesandbox.io/s/state-with-immer-h297m)  
+> [RxComp Sotre Codesandbox](https://codesandbox.io/s/rxcomp-storemodule-demo-h297m)  
 
 ![](https://rawcdn.githack.com/actarian/rxcomp-store/master/docs/img/rxcomp-store-demo.jpg?token=AAOBSISYZJXZNFFWAPGOLYC7DQKIO)  
 
@@ -41,8 +41,8 @@ For CDN, you can use unpkg
 ```html
 <script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
 <script src="https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
-<script src="https://unpkg.com/rxcomp@1.0.0-beta.10/dist/umd/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
-<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.10/dist/umd/rxcomp-store.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
+<script src="https://unpkg.com/rxcomp@1.0.0-beta.11/dist/umd/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
+<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.11/dist/umd/rxcomp-store.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
 ```
 
 The global namespace for RxComp is `rxcomp`

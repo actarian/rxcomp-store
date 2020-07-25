@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.10
+ * @license rxcomp-store v1.0.0-beta.11
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */

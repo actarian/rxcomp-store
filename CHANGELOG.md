@@ -3,7 +3,7 @@ All notable changes to the "rxcomp-store" library will be documented in this fil
 
 ---
 
-## [1.0.0-beta.10] - 2020-08-01
+## [1.0.0-beta.11] - 2020-08-01
 ### Added
 - Initial release of RxComp Store library
 
