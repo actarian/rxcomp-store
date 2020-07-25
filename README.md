@@ -14,6 +14,8 @@ rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/
 rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/iife/rxcomp.min.js.svg)
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg?compression=gzip)
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg)
+immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js.svg?compression=gzip)
+immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js.svg)
  
 > [RxComp Store Demo](https://actarian.github.io/rxcomp-store/)  
 > [RxComp Store Api](https://actarian.github.io/rxcomp-store/api/)  

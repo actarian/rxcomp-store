@@ -13,11 +13,6 @@
           "minify": true
         },
         {
-          "input": "test/css/rxcomp.scss",
-          "output": "docs/css/rxcomp-store.css",
-          "minify": true
-        },
-        {
           "input": "test/js/main.ts",
           "output": {
             "file": "docs/js/main.js",
@@ -37,6 +32,11 @@
           "input": "../rxcomp/dist/iife/rxcomp.js",
           "output": "docs/js/rxcomp.js",
           "minify": false
+        },
+        {
+          "input": "node_modules/rxcomp/dist/rxcomp-dark.css",
+          "output": "docs/css/rxcomp-dark.css",
+          "minify": true
         }
       ]
     },

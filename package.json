@@ -38,7 +38,7 @@
   "dependencies": {
     "immer": "~7.0.5",
     "rxjs": "~6.5.4",
-    "rxcomp": "~1.0.0-beta.10",
+    "rxcomp": "~1.0.0-beta.11",
     "tslib": "~2.0.0"
   },
   "devDependencies": {
