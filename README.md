@@ -192,7 +192,7 @@ The `nextError` method will store the `error` parameter in the immutable state.
 It works like the `catchState` operator but is intended to use in conjunction of classic `catchError` operator.  
 
 ```js
-const { next } = useStore({ todolist: [] });
+const { nextError } = useStore({ todolist: [] });
 
 catchError(error => nextError(error))
 ```
