@@ -248,7 +248,7 @@ next(<span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;<
 				</a>
 				<p>The <code>nextError</code> method will store the <code>error</code> parameter in the immutable state.
 				It works like the <code>catchState</code> operator but is intended to use in conjunction of classic <code>catchError</code> operator.  </p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> { next } = useStore({ <span class="hljs-attr">todolist</span>: [] });
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> { nextError } = useStore({ <span class="hljs-attr">todolist</span>: [] });
 
 catchError(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> nextError(error))</code></pre>
 				<hr>
@@ -306,7 +306,7 @@ Browser.bootstrap(AppModule);</code></pre>
 					<h2>Contact</h2>
 				</a>
 				<ul>
-					<li>Luca Zampetti <a href="mailto:&#108;&#122;&#97;&#x6d;&#x70;&#x65;&#116;&#116;&#x69;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#108;&#122;&#97;&#x6d;&#x70;&#x65;&#116;&#116;&#x69;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></li>
+					<li>Luca Zampetti <a href="mailto:&#108;&#x7a;&#97;&#109;&#x70;&#x65;&#x74;&#116;&#105;&#64;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;">&#108;&#x7a;&#97;&#109;&#x70;&#x65;&#x74;&#116;&#105;&#64;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;</a></li>
 					<li>Follow <a href="https://twitter.com/actarian">@actarian</a> on Twitter</li>
 				</ul>
 				<p><a href="https://twitter.com/actarian"><img src="https://img.shields.io/twitter/follow/actarian.svg?style=social&label=Follow%20@actarian" alt="Twitter Follow"></a>  </p>
