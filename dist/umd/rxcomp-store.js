@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.12
+ * @license rxcomp-store v1.0.0-beta.13
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -574,6 +574,7 @@ var Store = /*#__PURE__*/function () {
       key = 'store';
     }
 
+    this.cancel$ = new rxjs.Subject();
     this.type = type;
     this.key = "rxcomp_" + key;
     state.busy = false;
@@ -599,13 +600,14 @@ var Store = /*#__PURE__*/function () {
         _this.state = function (draft) {
           draft.busy = true;
           draft.error = null;
+          draft.retry = null;
         };
 
         return true;
       } else {
         return false;
       }
-    }));
+    }), operators.takeUntil(this.cancel$));
   };
 
   _proto.cached$ = function cached$(callback) {
@@ -655,6 +657,7 @@ var Store = /*#__PURE__*/function () {
           if (typeof _reducer === 'function') {
             _this3.state = function (draft) {
               draft.error = null;
+              draft.retry = null;
 
               _reducer(data, draft);
 
@@ -680,16 +683,59 @@ var Store = /*#__PURE__*/function () {
     };
   };
 
-  _proto.catchState = function catchState(errorReducer) {
+  _proto.retryState = function retryState(times, delay) {
     var _this4 = this;
+
+    if (times === void 0) {
+      times = 3;
+    }
+
+    if (delay === void 0) {
+      delay = 1000;
+    }
 
     return function (source) {
       return rxjs.defer(function () {
         // initialize global values
-        return source.pipe(operators.catchError(function (error) {
-          _this4.state = function (draft) {
+        var i = 0;
+        return source.pipe(operators.retryWhen(function (errors) {
+          return errors.pipe(operators.delayWhen(function () {
+            return rxjs.timer(delay);
+          }), operators.switchMap(function (error) {
+            // next((draft: any) => draft.busy = false);
+            if (i < times) {
+              i++;
+
+              _this4.state = function (draft) {
+                draft.retry = i;
+              };
+
+              return rxjs.of(i);
+            } else {
+              return rxjs.throwError(error);
+            }
+          }));
+        }));
+      });
+    };
+  };
+
+  _proto.catchState = function catchState(errorReducer) {
+    var _this5 = this;
+
+    return function (source) {
+      return rxjs.defer(function () {
+        // initialize global values
+        return source.pipe(operators.takeUntil(_this5.cancel$.pipe(operators.tap(function () {
+          _this5.state = function (draft) {
+            draft.busy = false;
+            draft.retry = null;
+          };
+        }))), operators.catchError(function (error) {
+          _this5.state = function (draft) {
             draft.error = error;
             draft.busy = false;
+            draft.retry = null;
           };
 
           if (typeof errorReducer === 'function') {
@@ -702,6 +748,10 @@ var Store = /*#__PURE__*/function () {
         }));
       });
     };
+  };
+
+  _proto.cancel = function cancel() {
+    this.cancel$.next();
   };
 
   _createClass(Store, [{
@@ -729,7 +779,9 @@ function useStore(state, type, key) {
     next: store.next.bind(store),
     nextError: store.nextError.bind(store),
     reducer: store.reducer.bind(store),
-    catchState: store.catchState.bind(store)
+    catchState: store.catchState.bind(store),
+    retryState: store.retryState.bind(store),
+    cancel: store.cancel.bind(store)
   };
 }
 /*
@@ -760,6 +812,7 @@ function makeNextError(state) {
     state.next(immer.produce(state.getValue(), function (draft) {
       draft.error = error;
       draft.busy = false;
+      draft.retry = null;
       return draft;
     }));
     return rxjs.of(error);

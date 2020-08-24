@@ -35,6 +35,10 @@ export default class AppComponent extends Component {
 		TodoService.clearItems$().subscribe(console.log);
 	}
 
+	onCancelRequest() {
+		TodoService.cancel();
+	}
+
 	removeItem(id: number) {
 		TodoService.removeItem$(id).subscribe(console.log);
 	}

@@ -3,7 +3,7 @@ import { switchMap } from 'rxjs/operators';
 import { StoreType, useStore } from '../../../src/rxcomp-store';
 import ApiService, { ITodoItem } from '../api/api.service';
 
-const { state$, busy$, cached$, reducer, catchState } = useStore({
+const { state$, busy$, cached$, reducer, catchState, retryState, cancel } = useStore({
 	todolist: [],
 }, StoreType.Session, 'todolist');
 
@@ -11,6 +11,10 @@ export class TodoService {
 
 	static get state$() {
 		return state$;
+	}
+
+	static get cancel() {
+		return cancel;
 	}
 
 	static loadWithCache$(): Observable<ITodoItem[] | unknown> {
@@ -37,6 +41,7 @@ export class TodoService {
 				reducer((item: ITodoItem, state: any) => {
 					state.todolist.push(item)
 				}),
+				retryState(),
 				catchState(console.log),
 			))
 		);

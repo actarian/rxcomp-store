@@ -21,6 +21,7 @@ var Store = /** @class */ (function () {
         if (state === void 0) { state = {}; }
         if (type === void 0) { type = StoreType.Memory; }
         if (key === void 0) { key = 'store'; }
+        this.cancel$ = new rxjs_1.Subject;
         this.type = type;
         this.key = "rxcomp_" + key;
         state.busy = false;
@@ -49,13 +50,14 @@ var Store = /** @class */ (function () {
                 _this.state = function (draft) {
                     draft.busy = true;
                     draft.error = null;
+                    draft.retry = null;
                 };
                 return true;
             }
             else {
                 return false;
             }
-        }));
+        }), operators_1.takeUntil(this.cancel$));
     };
     Store.prototype.cached$ = function (callback) {
         var _this = this;
@@ -95,6 +97,7 @@ var Store = /** @class */ (function () {
                 if (typeof reducer === 'function') {
                     _this.state = function (draft) {
                         draft.error = null;
+                        draft.retry = null;
                         reducer(data, draft);
                         draft.busy = false;
                         if (_this.type === StoreType.Local) {
@@ -116,15 +119,44 @@ var Store = /** @class */ (function () {
         }); };
     };
     ;
+    Store.prototype.retryState = function (times, delay) {
+        var _this = this;
+        if (times === void 0) { times = 3; }
+        if (delay === void 0) { delay = 1000; }
+        return function (source) { return rxjs_1.defer(function () {
+            // initialize global values
+            var i = 0;
+            return source.pipe(operators_1.retryWhen(function (errors) { return errors.pipe(operators_1.delayWhen(function () { return rxjs_1.timer(delay); }), operators_1.switchMap(function (error) {
+                // next((draft: any) => draft.busy = false);
+                if (i < times) {
+                    i++;
+                    _this.state = function (draft) {
+                        draft.retry = i;
+                    };
+                    return rxjs_1.of(i);
+                }
+                else {
+                    return rxjs_1.throwError(error);
+                }
+            })); }));
+        }); };
+    };
+    ;
     Store.prototype.catchState = function (errorReducer) {
         var _this = this;
         return function (source) {
             return rxjs_1.defer(function () {
                 // initialize global values
-                return source.pipe(operators_1.catchError(function (error) {
+                return source.pipe(operators_1.takeUntil(_this.cancel$.pipe(operators_1.tap(function () {
+                    _this.state = function (draft) {
+                        draft.busy = false;
+                        draft.retry = null;
+                    };
+                }))), operators_1.catchError(function (error) {
                     _this.state = function (draft) {
                         draft.error = error;
                         draft.busy = false;
+                        draft.retry = null;
                     };
                     if (typeof errorReducer === 'function') {
                         error = errorReducer(error);
@@ -138,6 +170,9 @@ var Store = /** @class */ (function () {
         };
     };
     ;
+    Store.prototype.cancel = function () {
+        this.cancel$.next();
+    };
     return Store;
 }());
 exports.Store = Store;
@@ -153,6 +188,8 @@ function useStore(state, type, key) {
         nextError: store.nextError.bind(store),
         reducer: store.reducer.bind(store),
         catchState: store.catchState.bind(store),
+        retryState: store.retryState.bind(store),
+        cancel: store.cancel.bind(store),
     };
 }
 exports.useStore = useStore;
@@ -181,6 +218,7 @@ function makeNextError(state) {
         state.next(immer_1.produce(state.getValue(), function (draft) {
             draft.error = error;
             draft.busy = false;
+            draft.retry = null;
             return draft;
         }));
         return rxjs_1.of(error);

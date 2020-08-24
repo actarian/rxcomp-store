@@ -187,17 +187,26 @@ counter-component {
 	}
 }
 
-.error {
+.error,
+.retry {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	font-size: 13px;
-	background: $background-primary;
-	color: $foreground-negative;
 	padding: 4px 10px;
 	margin-bottom: 2px;
 	border-radius: 2px;
 	user-select: none;
+}
+
+.error {
+	background: $background-primary;
+	color: $foreground-negative;
+}
+
+.retry {
+	background: rgba($background-primary, 0.4);
+	color: $foreground-negative;
 }
 
 .busy {

@@ -1,6 +1,6 @@
 import { produce } from 'immer';
-import { BehaviorSubject, defer, Observable, of } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { BehaviorSubject, defer, Observable, of, Subject, throwError, timer } from 'rxjs';
+import { catchError, delayWhen, distinctUntilChanged, filter, map, retryWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
 import CookieStorageService from '../storage/cookie-storage.service';
 import LocalStorageService from '../storage/local-storage.service';
 import SessionStorageService from '../storage/session-storage.service';
@@ -13,15 +13,17 @@ export enum StoreType {
 };
 
 export interface IStore {
-	busy$: () => Observable<null>,
-	reducer: <T, R>(reducer: (data: T, draft: any) => R) => (source: Observable<T>) => Observable<any>,
-	next: (callback: (draft: any) => any) => any,
-	nextError: (error: any) => Observable<any>,
-	select: (callback: (draft: any) => any) => any,
-	select$: (callback: (draft: any) => any) => any,
-	cached$: (callback: (draft: any) => any) => any,
-	catchState: (error?: any) => any,
-	state$: Observable<any>,
+	busy$: () => Observable<null>;
+	reducer: <T, R>(reducer: (data: T, draft: any) => R) => (source: Observable<T>) => Observable<any>;
+	next: (callback: (draft: any) => any) => any;
+	nextError: (error: any) => Observable<any>;
+	select: (callback: (draft: any) => any) => any;
+	select$: (callback: (draft: any) => any) => any;
+	cached$: (callback: (draft: any) => any) => any;
+	catchState: (error?: any) => any;
+	retryState: (times?: number, delay?: number) => (source: Observable<any>) => Observable<any>;
+	cancel: () => void;
+	state$: Observable<any>;
 }
 
 export class Store {
@@ -29,6 +31,7 @@ export class Store {
 	type: StoreType;
 	key: string;
 	state$: Observable<any>;
+	cancel$: Subject<void> = new Subject;
 
 	get state() {
 		return this.select((draft: any) => draft);
@@ -58,12 +61,14 @@ export class Store {
 					this.state = (draft: any) => {
 						draft.busy = true;
 						draft.error = null;
+						draft.retry = null;
 					};
 					return true;
 				} else {
 					return false;
 				}
-			})
+			}),
+			takeUntil(this.cancel$),
 		);
 	}
 
@@ -113,6 +118,7 @@ export class Store {
 					if (typeof reducer === 'function') {
 						this.state = (draft: any) => {
 							draft.error = null;
+							draft.retry = null;
 							reducer(data, draft);
 							draft.busy = false;
 							if (this.type === StoreType.Local) {
@@ -135,15 +141,48 @@ export class Store {
 		});
 	};
 
+	retryState(times: number = 3, delay: number = 1000): (source: Observable<any>) => Observable<unknown> {
+		return (source: Observable<any>) => defer(() => {
+			// initialize global values
+			let i = 0;
+			return source.pipe(
+				retryWhen((errors) => errors.pipe(
+					delayWhen(() => timer(delay)),
+					switchMap((error) => {
+						// next((draft: any) => draft.busy = false);
+						if (i < times) {
+							i++;
+							this.state = (draft: any) => {
+								draft.retry = i;
+							};
+							return of(i);
+						} else {
+							return throwError(error);
+						}
+					}),
+				)),
+			);
+		});
+	};
+
 	catchState(errorReducer?: (error: any) => any): (source: Observable<any>) => Observable<any> {
 		return (source: Observable<any>) =>
 			defer(() => {
 				// initialize global values
 				return source.pipe(
+					takeUntil(this.cancel$.pipe(
+						tap(() => {
+							this.state = (draft: any) => {
+								draft.busy = false;
+								draft.retry = null;
+							};
+						}),
+					)),
 					catchError(error => {
 						this.state = (draft: any) => {
 							draft.error = error;
 							draft.busy = false;
+							draft.retry = null;
 						};
 						if (typeof errorReducer === 'function') {
 							error = errorReducer(error);
@@ -151,11 +190,14 @@ export class Store {
 							error = null;
 						}
 						return (error ? of(error) : of());
-					})
+					}),
 				);
 			});
 	};
 
+	cancel(): void {
+		this.cancel$.next();
+	}
 }
 
 export function useStore(state: any, type?: StoreType, key?: string): IStore {
@@ -170,6 +212,8 @@ export function useStore(state: any, type?: StoreType, key?: string): IStore {
 		nextError: store.nextError.bind(store),
 		reducer: store.reducer.bind(store),
 		catchState: store.catchState.bind(store),
+		retryState: store.retryState.bind(store),
+		cancel: store.cancel.bind(store),
 	};
 }
 
@@ -200,6 +244,7 @@ function makeNextError(state: BehaviorSubject<any>): (error: any) => Observable<
 		state.next(produce(state.getValue(), (draft: any) => {
 			draft.error = error;
 			draft.busy = false;
+			draft.retry = null;
 			return draft;
 		}));
 		return of(error);

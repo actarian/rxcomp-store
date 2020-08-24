@@ -83,6 +83,16 @@ observable$.pipe(
 );
 ```
 ___
+### Retry state
+The `retryState` operator will retry N times before throwing the error.  
+```js
+const { retryState } = useStore({ todolist: [] });
+
+observable$.pipe(
+  retryState(3),
+);
+```
+___
 ### Catching errors into the state
 The `catchState` operator is used to catch the error and store it in the immutable state.  
 
@@ -97,6 +107,17 @@ You can then observe the state for errors.
 
 ```js
 state$.subscribe(state => this.error = state.error);
+```
+___
+### Canceling
+The `cancel` method will interrupt all the currently running streams in the store.  
+This method will not abort the fetch requests.
+```js
+const { cancel } = useStore({ todolist: [] });
+
+// stop currently running streams
+cancel();
+
 ```
 ___
 ### Setting the busy state
@@ -135,13 +156,14 @@ ___
 ### All together
 1. busy$ mark state as busy  
 2. cached$ load data from cache  
-3. reducer reduce the state to the new state  
-4. catchState catch the error and reduce the state to the errored state.  
+3. reducer reduce the state to the new state 
+4. retryState repeat the request N times then throw error. 
+5. catchState catch the error and reduce the state to the errored state.  
 
 ```js
 import { StoreType, useStore } from 'rxcomp-store';
 
-const { busy$, cached$, reducer, catchState } = useStore(
+const { busy$, cached$, reducer, retryState, catchState } = useStore(
   { todolist: [] },
   StoreType.Session, 'todolist'
 );
@@ -150,7 +172,8 @@ busy$().pipe(
   switchMap(() => 
     merge(cached$((state) => state.todolist), fromApi$).pipe(
       reducer((todolist, state) => state.todolist = todolist),
-      catchState(console.log),
+	  retryState(),
+	  catchState(console.log),
     )
   )
 );

@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.12
+ * @license rxcomp-store v1.0.0-beta.13
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -518,6 +518,7 @@ var Store = function () {
       key = 'store';
     }
 
+    this.cancel$ = new rxjs.Subject();
     this.type = type;
     this.key = "rxcomp_" + key;
     state.busy = false;
@@ -543,13 +544,14 @@ var Store = function () {
         _this.state = function (draft) {
           draft.busy = true;
           draft.error = null;
+          draft.retry = null;
         };
 
         return true;
       } else {
         return false;
       }
-    }));
+    }), operators.takeUntil(this.cancel$));
   };
 
   _proto.cached$ = function cached$(callback) {
@@ -597,6 +599,7 @@ var Store = function () {
           if (typeof _reducer === 'function') {
             _this3.state = function (draft) {
               draft.error = null;
+              draft.retry = null;
 
               _reducer(data, draft);
 
@@ -622,15 +625,56 @@ var Store = function () {
     };
   };
 
-  _proto.catchState = function catchState(errorReducer) {
+  _proto.retryState = function retryState(times, delay) {
     var _this4 = this;
+
+    if (times === void 0) {
+      times = 3;
+    }
+
+    if (delay === void 0) {
+      delay = 1000;
+    }
 
     return function (source) {
       return rxjs.defer(function () {
-        return source.pipe(operators.catchError(function (error) {
-          _this4.state = function (draft) {
+        var i = 0;
+        return source.pipe(operators.retryWhen(function (errors) {
+          return errors.pipe(operators.delayWhen(function () {
+            return rxjs.timer(delay);
+          }), operators.switchMap(function (error) {
+            if (i < times) {
+              i++;
+
+              _this4.state = function (draft) {
+                draft.retry = i;
+              };
+
+              return rxjs.of(i);
+            } else {
+              return rxjs.throwError(error);
+            }
+          }));
+        }));
+      });
+    };
+  };
+
+  _proto.catchState = function catchState(errorReducer) {
+    var _this5 = this;
+
+    return function (source) {
+      return rxjs.defer(function () {
+        return source.pipe(operators.takeUntil(_this5.cancel$.pipe(operators.tap(function () {
+          _this5.state = function (draft) {
+            draft.busy = false;
+            draft.retry = null;
+          };
+        }))), operators.catchError(function (error) {
+          _this5.state = function (draft) {
             draft.error = error;
             draft.busy = false;
+            draft.retry = null;
           };
 
           if (typeof errorReducer === 'function') {
@@ -643,6 +687,10 @@ var Store = function () {
         }));
       });
     };
+  };
+
+  _proto.cancel = function cancel() {
+    this.cancel$.next();
   };
 
   _createClass(Store, [{
@@ -670,7 +718,9 @@ function useStore(state, type, key) {
     next: store.next.bind(store),
     nextError: store.nextError.bind(store),
     reducer: store.reducer.bind(store),
-    catchState: store.catchState.bind(store)
+    catchState: store.catchState.bind(store),
+    retryState: store.retryState.bind(store),
+    cancel: store.cancel.bind(store)
   };
 }
 
@@ -691,6 +741,7 @@ function makeNextError(state) {
     state.next(immer.produce(state.getValue(), function (draft) {
       draft.error = error;
       draft.busy = false;
+      draft.retry = null;
       return draft;
     }));
     return rxjs.of(error);
@@ -719,17 +770,14 @@ var ApiService = function () {
 
   ApiService.addItem$ = function addItem$(url, item) {
     var id = new Date().valueOf();
-
-    if (Math.random() < 0.3) {
-      return rxjs.of(1).pipe(operators.delay(DELAY * Math.random()), operators.switchMap(function () {
-        return rxjs.throwError("simulated error " + id);
-      }));
-    }
-
     return rxjs.of({
       id: id,
       name: PROGRESSIVE_INDEX++ + " item " + id
-    }).pipe(operators.delay(DELAY * Math.random()));
+    }).pipe(operators.delay(DELAY * Math.random()), operators.tap(function () {
+      if (Math.random() < 0.6) {
+        throw "simulated error " + id;
+      }
+    }));
   };
 
   ApiService.clearItems$ = function clearItems$(url) {
@@ -752,7 +800,9 @@ var ApiService = function () {
     busy$ = _useStore.busy$,
     cached$ = _useStore.cached$,
     reducer = _useStore.reducer,
-    catchState = _useStore.catchState;
+    catchState = _useStore.catchState,
+    retryState = _useStore.retryState,
+    cancel = _useStore.cancel;
 
 var TodoService = function () {
   function TodoService() {}
@@ -779,7 +829,7 @@ var TodoService = function () {
     return busy$().pipe(operators.switchMap(function () {
       return ApiService.addItem$('url').pipe(reducer(function (item, state) {
         state.todolist.push(item);
-      }), catchState(console.log));
+      }), retryState(), catchState(console.log));
     }));
   };
 
@@ -824,6 +874,11 @@ var TodoService = function () {
     get: function get() {
       return state$;
     }
+  }, {
+    key: "cancel",
+    get: function get() {
+      return cancel;
+    }
   }]);
 
   return TodoService;
@@ -865,6 +920,10 @@ var AppComponent = function (_Component) {
 
   _proto.onClearItems = function onClearItems() {
     TodoService.clearItems$().subscribe(console.log);
+  };
+
+  _proto.onCancelRequest = function onCancelRequest() {
+    TodoService.cancel();
   };
 
   _proto.removeItem = function removeItem(id) {

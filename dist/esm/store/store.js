@@ -1,6 +1,6 @@
 import { produce } from 'immer';
-import { BehaviorSubject, defer, of } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { BehaviorSubject, defer, of, Subject, throwError, timer } from 'rxjs';
+import { catchError, delayWhen, distinctUntilChanged, filter, map, retryWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
 import CookieStorageService from '../storage/cookie-storage.service';
 import LocalStorageService from '../storage/local-storage.service';
 import SessionStorageService from '../storage/session-storage.service';
@@ -14,6 +14,7 @@ export var StoreType;
 ;
 export class Store {
     constructor(state = {}, type = StoreType.Memory, key = 'store') {
+        this.cancel$ = new Subject;
         this.type = type;
         this.key = `rxcomp_${key}`;
         state.busy = false;
@@ -37,13 +38,14 @@ export class Store {
                 this.state = (draft) => {
                     draft.busy = true;
                     draft.error = null;
+                    draft.retry = null;
                 };
                 return true;
             }
             else {
                 return false;
             }
-        }));
+        }), takeUntil(this.cancel$));
     }
     cached$(callback) {
         return of(null).pipe(map(() => {
@@ -81,6 +83,7 @@ export class Store {
                 if (typeof reducer === 'function') {
                     this.state = (draft) => {
                         draft.error = null;
+                        draft.retry = null;
                         reducer(data, draft);
                         draft.busy = false;
                         if (this.type === StoreType.Local) {
@@ -102,13 +105,39 @@ export class Store {
         });
     }
     ;
+    retryState(times = 3, delay = 1000) {
+        return (source) => defer(() => {
+            // initialize global values
+            let i = 0;
+            return source.pipe(retryWhen((errors) => errors.pipe(delayWhen(() => timer(delay)), switchMap((error) => {
+                // next((draft: any) => draft.busy = false);
+                if (i < times) {
+                    i++;
+                    this.state = (draft) => {
+                        draft.retry = i;
+                    };
+                    return of(i);
+                }
+                else {
+                    return throwError(error);
+                }
+            }))));
+        });
+    }
+    ;
     catchState(errorReducer) {
         return (source) => defer(() => {
             // initialize global values
-            return source.pipe(catchError(error => {
+            return source.pipe(takeUntil(this.cancel$.pipe(tap(() => {
+                this.state = (draft) => {
+                    draft.busy = false;
+                    draft.retry = null;
+                };
+            }))), catchError(error => {
                 this.state = (draft) => {
                     draft.error = error;
                     draft.busy = false;
+                    draft.retry = null;
                 };
                 if (typeof errorReducer === 'function') {
                     error = errorReducer(error);
@@ -121,6 +150,9 @@ export class Store {
         });
     }
     ;
+    cancel() {
+        this.cancel$.next();
+    }
 }
 export function useStore(state, type, key) {
     const store = new Store(state, type, key);
@@ -134,6 +166,8 @@ export function useStore(state, type, key) {
         nextError: store.nextError.bind(store),
         reducer: store.reducer.bind(store),
         catchState: store.catchState.bind(store),
+        retryState: store.retryState.bind(store),
+        cancel: store.cancel.bind(store),
     };
 }
 /*
@@ -161,6 +195,7 @@ function makeNextError(state) {
         state.next(produce(state.getValue(), (draft) => {
             draft.error = error;
             draft.busy = false;
+            draft.retry = null;
             return draft;
         }));
         return of(error);

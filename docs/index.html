@@ -55,6 +55,7 @@
 		<div class="container">
 			<div class="group--cta">
 				<div class="btn" (click)="onAddItem()"><span>add</span></div>
+				<div class="btn" (click)="onCancelRequest()"><span>cancel</span></div>
 				<div class="btn" (click)="onClearItems()"><span>clear</span></div>
 			</div>
 			<div class="busy" [class]="{ hidden : !state.busy }"></div>
@@ -65,6 +66,7 @@
 				</span>
 				<span class="remove" (click)="removeItem(item.id)">X</span>
 			</div>
+			<div class="retry" *if="state.retry != null">retry {{state.retry}}</div>
 			<div class="error" *if="state.error" [innerHTML]="state.error"></div>
 			<session-storage-component></session-storage-component>
 			<local-storage-component></local-storage-component>

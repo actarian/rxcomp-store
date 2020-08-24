@@ -1,5 +1,5 @@
-import { Observable, of, throwError } from 'rxjs';
-import { delay, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 
 const DELAY: number = 300;
 let PROGRESSIVE_INDEX: number = 0;
@@ -25,15 +25,21 @@ export default class ApiService {
 	static addItem$(url: string, item?: ITodoItem): Observable<ITodoItem> {
 		// simulate api call
 		const id = new Date().valueOf();
-		if (Math.random() < 0.3) {
-			// simulate api error
-			return of(1).pipe(
-				delay(DELAY * Math.random()),
-				switchMap(() => throwError(`simulated error ${id}`))
-			);
-		}
 		return of({ id: id, name: `${PROGRESSIVE_INDEX++} item ${id}` }).pipe(
-			delay(DELAY * Math.random())
+			delay(DELAY * Math.random()),
+			tap(() => {
+				if (Math.random() < 0.6) {
+					throw (`simulated error ${id}`);
+					/*
+					// simulate api error
+					return of(1).pipe(
+						delay(DELAY * Math.random()),
+						tap(() => console.log('error')),
+						switchMap(() => throwError(`simulated error ${id}`))
+					);
+					*/
+				}
+			})
 		);
 	}
 
