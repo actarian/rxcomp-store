@@ -290,13 +290,6 @@ input.valid + .icon--check {
     letter-spacing: 0.5px;
     line-height: 1.5;
     color: rgba(98, 108, 98, 0.2); }
-  .control--text::-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
-    color: rgba(98, 108, 98, 0.2); }
   .control--text::placeholder {
     font-family: "Open Sans", sans-serif;
     font-size: 19px;
@@ -362,13 +355,6 @@ input.valid + .icon--check {
     -webkit-transition: background-color 5000s ease-in-out 0s;
     transition: background-color 5000s ease-in-out 0s; }
   .control--select:-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif;
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
-    color: rgba(98, 108, 98, 0.2); }
-  .control--select::-ms-input-placeholder {
     font-family: "Open Sans", sans-serif;
     font-size: 19px;
     font-weight: 700;

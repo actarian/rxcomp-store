@@ -36,15 +36,15 @@
     "docs2": "typedoc --out docs/documentation src/rxcomp-store.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
   },
   "dependencies": {
-    "immer": "~7.0.7",
-    "rxjs": "~6.5.4",
-    "rxcomp": "~1.0.0-beta.11",
-    "tslib": "~2.0.0"
+    "immer": "7.0.7",
+    "rxjs": "6.6.2",
+    "rxcomp": "1.0.0-beta.13",
+    "tslib": "2.0.0"
   },
   "devDependencies": {
-    "@types/node": "~14.0.24",
-    "gulpfile-config": "~1.0.0-alpha.12",
-    "typedoc": "~0.17.8",
-    "typescript": "~3.9.7"
+    "@types/node": "14.0.24",
+    "gulpfile-config": "1.0.0-alpha.13",
+    "typedoc": "0.17.8",
+    "typescript": "3.9.7"
   }
 }
