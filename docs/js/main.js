@@ -24,45 +24,40 @@ function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
   subClass.__proto__ = superClass;
-}var StorageService = function () {
+}function encodeBase64(value) {
+  var encoded;
+
+  try {
+    encoded = rxcomp.isPlatformBrowser ? btoa(value) : Buffer.from(value).toString('base64');
+  } catch (error) {
+    encoded = typeof value === 'string' ? value : undefined;
+  }
+
+  return encoded;
+}
+function decodeBase64(value) {
+  var decoded;
+
+  try {
+    decoded = rxcomp.isPlatformBrowser ? atob(value) : Buffer.from(value, 'base64').toString();
+  } catch (error) {
+    decoded = typeof value === 'string' ? value : undefined;
+  }
+
+  return decoded;
+}
+
+var StorageService = function () {
   function StorageService() {}
 
-  StorageService.encode = function encode(value) {
-    var encodedJson = null;
-
-    try {
-      var cache = new Map();
-      var json = JSON.stringify(value, function (key, value) {
-        if (typeof value === 'object' && value != null) {
-          if (cache.has(value)) {
-            return;
-          }
-
-          cache.set(value, true);
-        }
-
-        return value;
-      });
-      encodedJson = btoa(encodeURIComponent(json));
-    } catch (error) {
-      console.warn('StorageService.encode.error', value, error);
-    }
-
-    return encodedJson;
+  StorageService.encode = function encode(decoded) {
+    var encoded = rxcomp.Serializer.encode(decoded, [rxcomp.encodeJson, encodeURIComponent, encodeBase64]) || null;
+    return encoded;
   };
 
-  StorageService.decode = function decode(encodedJson) {
-    var value;
-
-    if (encodedJson) {
-      try {
-        value = JSON.parse(decodeURIComponent(atob(encodedJson)));
-      } catch (error) {
-        value = encodedJson;
-      }
-    }
-
-    return value;
+  StorageService.decode = function decode(encoded) {
+    var decoded = rxcomp.Serializer.decode(encoded, [decodeBase64, decodeURIComponent, rxcomp.decodeJson]);
+    return decoded;
   };
 
   StorageService.isSupported = function isSupported(type) {

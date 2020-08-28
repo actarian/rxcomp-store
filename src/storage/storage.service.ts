@@ -1,45 +1,42 @@
+import { decodeJson, encodeJson, isPlatformBrowser, Serializer } from 'rxcomp';
 
 export interface IStorageItem {
 	name: string;
 	value: any;
 }
 
+export function encodeBase64(value: any): string | undefined {
+	let encoded: string | undefined;
+	try {
+		encoded = isPlatformBrowser ? btoa(value) : Buffer.from(value).toString('base64');
+	} catch (error) {
+		encoded = typeof value === 'string' ? value : undefined;
+	}
+	return encoded;
+}
+
+export function decodeBase64(value: string): any {
+	let decoded: any;
+	try {
+		decoded = isPlatformBrowser ? atob(value) : Buffer.from(value, 'base64').toString();
+	} catch (error) {
+		decoded = typeof value === 'string' ? value : undefined;
+	}
+	return decoded;
+}
+
 export default class StorageService {
 
 	static supported: boolean = false;
 
-	static encode(value: any): string | null {
-		let encodedJson: string | null = null;
-		try {
-			const cache: Map<any, boolean> = new Map();
-			const json: string = JSON.stringify(value, function (key, value) {
-				if (typeof value === 'object' && value != null) {
-					if (cache.has(value)) {
-						// Circular reference found, discard key
-						return;
-					}
-					cache.set(value, true);
-				}
-				return value;
-			});
-			encodedJson = btoa(encodeURIComponent(json));
-		} catch (error) {
-			console.warn('StorageService.encode.error', value, error);
-		}
-		return encodedJson;
+	static encode(decoded: any): string | null {
+		let encoded: string | null = Serializer.encode(decoded, [encodeJson, encodeURIComponent, encodeBase64]) || null;
+		return encoded;
 	}
 
-	static decode(encodedJson: string | null): any {
-		let value: any;
-		if (encodedJson) {
-			try {
-				value = JSON.parse(decodeURIComponent(atob(encodedJson)));
-			} catch (error) {
-				// console.warn('StorageService.decode.error', encodedJson);
-				value = encodedJson;
-			}
-		}
-		return value;
+	static decode(encoded: string | null): any {
+		let decoded: any = Serializer.decode(encoded, [decodeBase64, decodeURIComponent, decodeJson]);
+		return decoded;
 	}
 
 	static isSupported(type: 'localStorage' | 'sessionStorage'): boolean {
