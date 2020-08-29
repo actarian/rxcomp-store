@@ -1,41 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var rxcomp_1 = require("rxcomp");
 var StorageService = /** @class */ (function () {
     function StorageService() {
     }
-    StorageService.encode = function (value) {
-        var encodedJson = null;
-        try {
-            var cache_1 = new Map();
-            var json = JSON.stringify(value, function (key, value) {
-                if (typeof value === 'object' && value != null) {
-                    if (cache_1.has(value)) {
-                        // Circular reference found, discard key
-                        return;
-                    }
-                    cache_1.set(value, true);
-                }
-                return value;
-            });
-            encodedJson = btoa(encodeURIComponent(json));
-        }
-        catch (error) {
-            console.warn('StorageService.encode.error', value, error);
-        }
-        return encodedJson;
+    StorageService.encode = function (decoded) {
+        var encoded = rxcomp_1.Serializer.encode(decoded, [rxcomp_1.encodeJson, encodeURIComponent, rxcomp_1.encodeBase64]) || null;
+        return encoded;
     };
-    StorageService.decode = function (encodedJson) {
-        var value;
-        if (encodedJson) {
-            try {
-                value = JSON.parse(decodeURIComponent(atob(encodedJson)));
-            }
-            catch (error) {
-                // console.warn('StorageService.decode.error', encodedJson);
-                value = encodedJson;
-            }
-        }
-        return value;
+    StorageService.decode = function (encoded) {
+        var decoded = rxcomp_1.Serializer.decode(encoded, [rxcomp_1.decodeBase64, decodeURIComponent, rxcomp_1.decodeJson]);
+        return decoded;
     };
     StorageService.isSupported = function (type) {
         var flag = false;

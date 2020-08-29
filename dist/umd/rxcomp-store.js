@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.13
+ * @license rxcomp-store v1.0.0-beta.14
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -27,44 +27,14 @@ function _inheritsLoose(subClass, superClass) {
 }var StorageService = /*#__PURE__*/function () {
   function StorageService() {}
 
-  StorageService.encode = function encode(value) {
-    var encodedJson = null;
-
-    try {
-      var cache = new Map();
-      var json = JSON.stringify(value, function (key, value) {
-        if (typeof value === 'object' && value != null) {
-          if (cache.has(value)) {
-            // Circular reference found, discard key
-            return;
-          }
-
-          cache.set(value, true);
-        }
-
-        return value;
-      });
-      encodedJson = btoa(encodeURIComponent(json));
-    } catch (error) {
-      console.warn('StorageService.encode.error', value, error);
-    }
-
-    return encodedJson;
+  StorageService.encode = function encode(decoded) {
+    var encoded = rxcomp.Serializer.encode(decoded, [rxcomp.encodeJson, encodeURIComponent, rxcomp.encodeBase64]) || null;
+    return encoded;
   };
 
-  StorageService.decode = function decode(encodedJson) {
-    var value;
-
-    if (encodedJson) {
-      try {
-        value = JSON.parse(decodeURIComponent(atob(encodedJson)));
-      } catch (error) {
-        // console.warn('StorageService.decode.error', encodedJson);
-        value = encodedJson;
-      }
-    }
-
-    return value;
+  StorageService.decode = function decode(encoded) {
+    var decoded = rxcomp.Serializer.decode(encoded, [rxcomp.decodeBase64, decodeURIComponent, rxcomp.decodeJson]);
+    return decoded;
   };
 
   StorageService.isSupported = function isSupported(type) {

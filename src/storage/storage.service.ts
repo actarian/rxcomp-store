@@ -1,28 +1,8 @@
-import { decodeJson, encodeJson, isPlatformBrowser, Serializer } from 'rxcomp';
+import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer } from 'rxcomp';
 
 export interface IStorageItem {
 	name: string;
 	value: any;
-}
-
-export function encodeBase64(value: any): string | undefined {
-	let encoded: string | undefined;
-	try {
-		encoded = isPlatformBrowser ? btoa(value) : Buffer.from(value).toString('base64');
-	} catch (error) {
-		encoded = typeof value === 'string' ? value : undefined;
-	}
-	return encoded;
-}
-
-export function decodeBase64(value: string): any {
-	let decoded: any;
-	try {
-		decoded = isPlatformBrowser ? atob(value) : Buffer.from(value, 'base64').toString();
-	} catch (error) {
-		decoded = typeof value === 'string' ? value : undefined;
-	}
-	return decoded;
 }
 
 export default class StorageService {

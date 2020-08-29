@@ -4,7 +4,7 @@ export interface IStorageItem {
 }
 export default class StorageService {
     static supported: boolean;
-    static encode(value: any): string | null;
-    static decode(encodedJson: string | null): any;
+    static encode(decoded: any): string | null;
+    static decode(encoded: string | null): any;
     static isSupported(type: 'localStorage' | 'sessionStorage'): boolean;
 }

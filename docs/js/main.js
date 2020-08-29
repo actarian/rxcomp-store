@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.13
+ * @license rxcomp-store v1.0.0-beta.14
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -24,39 +24,16 @@ function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
   subClass.__proto__ = superClass;
-}function encodeBase64(value) {
-  var encoded;
-
-  try {
-    encoded = rxcomp.isPlatformBrowser ? btoa(value) : Buffer.from(value).toString('base64');
-  } catch (error) {
-    encoded = typeof value === 'string' ? value : undefined;
-  }
-
-  return encoded;
-}
-function decodeBase64(value) {
-  var decoded;
-
-  try {
-    decoded = rxcomp.isPlatformBrowser ? atob(value) : Buffer.from(value, 'base64').toString();
-  } catch (error) {
-    decoded = typeof value === 'string' ? value : undefined;
-  }
-
-  return decoded;
-}
-
-var StorageService = function () {
+}var StorageService = function () {
   function StorageService() {}
 
   StorageService.encode = function encode(decoded) {
-    var encoded = rxcomp.Serializer.encode(decoded, [rxcomp.encodeJson, encodeURIComponent, encodeBase64]) || null;
+    var encoded = rxcomp.Serializer.encode(decoded, [rxcomp.encodeJson, encodeURIComponent, rxcomp.encodeBase64]) || null;
     return encoded;
   };
 
   StorageService.decode = function decode(encoded) {
-    var decoded = rxcomp.Serializer.decode(encoded, [decodeBase64, decodeURIComponent, rxcomp.decodeJson]);
+    var decoded = rxcomp.Serializer.decode(encoded, [rxcomp.decodeBase64, decodeURIComponent, rxcomp.decodeJson]);
     return decoded;
   };
 

@@ -1,37 +1,12 @@
+import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer } from 'rxcomp';
 export default class StorageService {
-    static encode(value) {
-        let encodedJson = null;
-        try {
-            const cache = new Map();
-            const json = JSON.stringify(value, function (key, value) {
-                if (typeof value === 'object' && value != null) {
-                    if (cache.has(value)) {
-                        // Circular reference found, discard key
-                        return;
-                    }
-                    cache.set(value, true);
-                }
-                return value;
-            });
-            encodedJson = btoa(encodeURIComponent(json));
-        }
-        catch (error) {
-            console.warn('StorageService.encode.error', value, error);
-        }
-        return encodedJson;
+    static encode(decoded) {
+        let encoded = Serializer.encode(decoded, [encodeJson, encodeURIComponent, encodeBase64]) || null;
+        return encoded;
     }
-    static decode(encodedJson) {
-        let value;
-        if (encodedJson) {
-            try {
-                value = JSON.parse(decodeURIComponent(atob(encodedJson)));
-            }
-            catch (error) {
-                // console.warn('StorageService.decode.error', encodedJson);
-                value = encodedJson;
-            }
-        }
-        return value;
+    static decode(encoded) {
+        let decoded = Serializer.decode(encoded, [decodeBase64, decodeURIComponent, decodeJson]);
+        return decoded;
     }
     static isSupported(type) {
         let flag = false;
