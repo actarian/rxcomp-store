@@ -4,6 +4,12 @@ All notable changes to the "rxcomp-store" library will be documented in this fil
 ---
 
 ## [1.0.0-beta.14] - 2020-08-29
+### Modified
+- StorageService
+
+---
+
+## [1.0.0-beta.13] - 2020-08-23
 ### Added
 - retryState and cancel
 
