@@ -22,6 +22,7 @@ var SessionStorageComponent = /** @class */ (function (_super) {
     };
     SessionStorageComponent.prototype.onToggle = function () {
         this.active = !this.active;
+        console.log('SessionStorageComponent.onToggle', this.active);
         this.pushChanges();
     };
     SessionStorageComponent.prototype.onClear = function () {

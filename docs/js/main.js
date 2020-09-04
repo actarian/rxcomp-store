@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.14
+ * @license rxcomp-store v1.0.0-beta.16
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -437,6 +437,7 @@ SessionStorageService.items$ = new rxjs.ReplaySubject(1);var SessionStorageCompo
 
   _proto.onToggle = function onToggle() {
     this.active = !this.active;
+    console.log('SessionStorageComponent.onToggle', this.active);
     this.pushChanges();
   };
 

@@ -20,6 +20,7 @@ export default class SessionStorageComponent extends Component {
 
 	onToggle() {
 		this.active = !this.active;
+		console.log('SessionStorageComponent.onToggle', this.active);
 		this.pushChanges();
 	}
 

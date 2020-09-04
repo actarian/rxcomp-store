@@ -2,7 +2,7 @@
   "author": "Luca Zampetti <lzampetti@gmail.com>",
   "name": "rxcomp-store",
   "description": "Reactive StoreModule for RxComp component library",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0-beta.16",
   "browser": "dist/umd/rxcomp-store.js",
   "main": "dist/cjs/rxcomp-store.js",
   "types": "dist/cjs/rxcomp-store.d.ts",
@@ -36,15 +36,15 @@
     "docs2": "typedoc --out docs/documentation src/rxcomp-store.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
   },
   "dependencies": {
-    "immer": "7.0.7",
+    "immer": "7.0.8",
     "rxjs": "6.6.2",
-    "rxcomp": "1.0.0-beta.14",
-    "tslib": "2.0.0"
+    "rxcomp": "1.0.0-beta.16",
+    "tslib": "2.0.1"
   },
   "devDependencies": {
-    "@types/node": "14.0.24",
-    "gulpfile-config": "1.0.0-alpha.13",
-    "typedoc": "0.17.8",
-    "typescript": "3.9.7"
+    "@types/node": "14.6.4",
+    "gulpfile-config": "1.0.0-alpha.14",
+    "typedoc": "0.19.0",
+    "typescript": "4.0.2"
   }
 }

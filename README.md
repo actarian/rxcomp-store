@@ -8,14 +8,14 @@ The store can however be used with any framework or VanillaJS.
 
  lib & dependancy    | size
 :--------------------|:----------------------------------------------------------------------------------------------|
-rxcomp-store.min.js   | ![](https://img.badgesize.io/https://unpkg.com/rxcomp-store@1.0.0-beta.14/dist/umd/rxcomp-store.min.js.svg?compression=gzip)
-rxcomp-store.min.js   | ![](https://img.badgesize.io/https://unpkg.com/rxcomp-store@1.0.0-beta.14/dist/umd/rxcomp-store.min.js.svg)
-rxcomp.min.js        | ![](https://img.badgesize.io/https://unpkg.com/rxcomp@1.0.0-beta.14/dist/umd/rxcomp.min.js.svg?compression=gzip)
-rxcomp.min.js        | ![](https://img.badgesize.io/https://unpkg.com/rxcomp@1.0.0-beta.14/dist/umd/rxcomp.min.js.svg)
+rxcomp-store.min.js   | ![](https://img.badgesize.io/https://unpkg.com/rxcomp-store@1.0.0-beta.16/dist/umd/rxcomp-store.min.js.svg?compression=gzip)
+rxcomp-store.min.js   | ![](https://img.badgesize.io/https://unpkg.com/rxcomp-store@1.0.0-beta.16/dist/umd/rxcomp-store.min.js.svg)
+rxcomp.min.js        | ![](https://img.badgesize.io/https://unpkg.com/rxcomp@1.0.0-beta.16/dist/umd/rxcomp.min.js.svg?compression=gzip)
+rxcomp.min.js        | ![](https://img.badgesize.io/https://unpkg.com/rxcomp@1.0.0-beta.16/dist/umd/rxcomp.min.js.svg)
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.6.2/dist/global/rxjs.umd.min.js.svg?compression=gzip)
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.6.2/dist/global/rxjs.umd.min.js.svg)
-immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js.svg?compression=gzip)
-immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js.svg)
+immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.8/dist/immer.umd.production.min.js.svg?compression=gzip)
+immer.min.js          | ![](https://img.badgesize.io/https://unpkg.com/immer@7.0.8/dist/immer.umd.production.min.js.svg)
  
 > [RxComp Store Demo](https://actarian.github.io/rxcomp-store/)  
 > [RxComp Store Api](https://actarian.github.io/rxcomp-store/api/)  
@@ -40,9 +40,9 @@ For CDN, you can use unpkg
 
 ```html
 <script src="https://unpkg.com/@reactivex/rxjs@6.6.2/dist/global/rxjs.umd.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
-<script src="https://unpkg.com/immer@7.0.5/dist/immer.umd.production.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
-<script src="https://unpkg.com/rxcomp@1.0.0-beta.14/dist/umd/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
-<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.14/dist/umd/rxcomp-store.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
+<script src="https://unpkg.com/immer@7.0.8/dist/immer.umd.production.min.js" crossorigin="anonymous" SameSite="none Secure"></script>
+<script src="https://unpkg.com/rxcomp@1.0.0-beta.16/dist/umd/rxcomp.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
+<script src="https://unpkg.com/rxcomp-store@1.0.0-beta.16/dist/umd/rxcomp-store.min.js" crossorigin="anonymous" SameSite="none Secure"></script>  
 ```
 
 The global namespace for RxComp is `rxcomp`

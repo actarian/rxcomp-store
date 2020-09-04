@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CookieStorageComponent | RxCompStore</title>
-	<meta name="description" content="Documentation for RxCompStore">
+	<title>CookieStorageComponent | RxComp StoreModule</title>
+	<meta name="description" content="Documentation for RxComp StoreModule">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">RxCompStore</a>
+					<a href="../index.html" class="title">RxComp StoreModule</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -108,10 +108,12 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cookiestoragecomponent.html#onclear" class="tsd-kind-icon">on<wbr>Clear</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="cookiestoragecomponent.html#ondestroy" class="tsd-kind-icon">on<wbr>Destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="cookiestoragecomponent.html#oninit" class="tsd-kind-icon">on<wbr>Init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="cookiestoragecomponent.html#onparentdidchange" class="tsd-kind-icon">on<wbr>Parent<wbr>Did<wbr>Change</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cookiestoragecomponent.html#onremove" class="tsd-kind-icon">on<wbr>Remove</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cookiestoragecomponent.html#ontoggle" class="tsd-kind-icon">on<wbr>Toggle</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="cookiestoragecomponent.html#onview" class="tsd-kind-icon">on<wbr>View</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="cookiestoragecomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="cookiestoragecomponent.html#getinputstokens" class="tsd-kind-icon">get<wbr>Inputs<wbr>Tokens</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -136,7 +138,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="cookiestoragecomponent.html">CookieStorageComponent</a>.<a href="cookiestoragecomponent.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:19</li>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:20</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -158,7 +160,7 @@
 					<div class="tsd-signature tsd-kind-icon">active<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L8">src/storage/cookie-storage.component.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L8">src/storage/cookie-storage.component.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -179,7 +181,7 @@
 					<div class="tsd-signature tsd-kind-icon">items<span class="tsd-signature-symbol">:</span> <a href="../interfaces/istorageitem.html" class="tsd-signature-type">IStorageItem</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L9">src/storage/cookie-storage.component.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L9">src/storage/cookie-storage.component.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -242,7 +244,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L26">src/storage/cookie-storage.component.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L26">src/storage/cookie-storage.component.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -278,9 +280,33 @@
 							<aside class="tsd-sources">
 								<p>Overrides Factory.onInit</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L11">src/storage/cookie-storage.component.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L11">src/storage/cookie-storage.component.ts:11</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="onparentdidchange" class="tsd-anchor"></a>
+					<h3>on<wbr>Parent<wbr>Did<wbr>Change</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Parent<wbr>Did<wbr>Change<span class="tsd-signature-symbol">(</span>changes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Window</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="cookiestoragecomponent.html">CookieStorageComponent</a>.<a href="cookiestoragecomponent.html#onparentdidchange">onParentDidChange</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:19</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>changes: <span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Window</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -295,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L30">src/storage/cookie-storage.component.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L30">src/storage/cookie-storage.component.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -318,7 +344,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L21">src/storage/cookie-storage.component.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L21">src/storage/cookie-storage.component.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -362,6 +388,30 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="getinputstokens" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Inputs<wbr>Tokens</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Inputs<wbr>Tokens<span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="cookiestoragecomponent.html">CookieStorageComponent</a>.<a href="cookiestoragecomponent.html#getinputstokens">getInputsTokens</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:22</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>instance: <span class="tsd-signature-type">Factory</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Object literals</h2>
@@ -372,7 +422,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides Factory.meta</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L34">src/storage/cookie-storage.component.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L34">src/storage/cookie-storage.component.ts:34</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -381,7 +431,7 @@
 						<div class="tsd-signature tsd-kind-icon">selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;cookie-storage-component&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L35">src/storage/cookie-storage.component.ts:35</a></li>
+								<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L35">src/storage/cookie-storage.component.ts:35</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -391,7 +441,7 @@
 						<div class="tsd-signature tsd-kind-icon">template<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x60;&lt;div class&#x3D;&quot;rxc-block&quot;&gt;&lt;div class&#x3D;&quot;rxc-head&quot;&gt;&lt;span class&#x3D;&quot;rxc-head__title&quot; (click)&#x3D;&quot;onToggle()&quot;&gt;&lt;span *if&#x3D;&quot;!active&quot;&gt;+ cookie&lt;/span&gt;&lt;span *if&#x3D;&quot;active&quot;&gt;- cookie&lt;/span&gt;&lt;span [innerHTML]&#x3D;&quot;&#x27; {&#x27; + items.length + &#x27;)&#x27;&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class&#x3D;&quot;rxc-head__remove&quot; (click)&#x3D;&quot;onClear()&quot;&gt;x&lt;/span&gt;&lt;/div&gt;&lt;ul class&#x3D;&quot;rxc-list&quot; *if&#x3D;&quot;active&quot;&gt;&lt;li class&#x3D;&quot;rxc-list__item&quot; *for&#x3D;&quot;let item of items&quot;&gt;&lt;span class&#x3D;&quot;rxc-list__name&quot; [innerHTML]&#x3D;&quot;item.name&quot;&gt;&lt;/span&gt;&lt;span class&#x3D;&quot;rxc-list__value&quot; [innerHTML]&#x3D;&quot;item.value | json&quot;&gt;&lt;/span&gt;&lt;span class&#x3D;&quot;rxc-list__remove&quot; (click)&#x3D;&quot;onRemove(item)&quot;&gt;x&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&#x60;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/a33df34/src/storage/cookie-storage.component.ts#L36">src/storage/cookie-storage.component.ts:36</a></li>
+								<li>Defined in <a href="https://github.com/actarian/rxcomp-store/blob/b6ac106/src/storage/cookie-storage.component.ts#L36">src/storage/cookie-storage.component.ts:36</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -408,8 +458,92 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="../enums/storetype.html" class="tsd-kind-icon">Store<wbr>Type</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="cookiestoragecomponent.html" class="tsd-kind-icon">Cookie<wbr>Storage<wbr>Component</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cookiestoragecomponent.html#active" class="tsd-kind-icon">active</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#changes_" class="tsd-kind-icon">changes$</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="cookiestoragecomponent.html#items" class="tsd-kind-icon">items</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#rxcompid" class="tsd-kind-icon">rxcomp<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#unsubscribe_" class="tsd-kind-icon">unsubscribe$</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#onchanges" class="tsd-kind-icon">on<wbr>Changes</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="cookiestoragecomponent.html#onclear" class="tsd-kind-icon">on<wbr>Clear</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#ondestroy" class="tsd-kind-icon">on<wbr>Destroy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="cookiestoragecomponent.html#oninit" class="tsd-kind-icon">on<wbr>Init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#onparentdidchange" class="tsd-kind-icon">on<wbr>Parent<wbr>Did<wbr>Change</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="cookiestoragecomponent.html#onremove" class="tsd-kind-icon">on<wbr>Remove</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="cookiestoragecomponent.html#ontoggle" class="tsd-kind-icon">on<wbr>Toggle</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#onview" class="tsd-kind-icon">on<wbr>View</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="cookiestoragecomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="cookiestoragecomponent.html#getinputstokens" class="tsd-kind-icon">get<wbr>Inputs<wbr>Tokens</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite tsd-is-static">
+								<a href="cookiestoragecomponent.html#meta" class="tsd-kind-icon">meta</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="cookiestorageservice.html" class="tsd-kind-icon">Cookie<wbr>Storage<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="localstoragecomponent.html" class="tsd-kind-icon">Local<wbr>Storage<wbr>Component</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="localstorageservice.html" class="tsd-kind-icon">Local<wbr>Storage<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="sessionstoragecomponent.html" class="tsd-kind-icon">Session<wbr>Storage<wbr>Component</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="sessionstorageservice.html" class="tsd-kind-icon">Session<wbr>Storage<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="store.html" class="tsd-kind-icon">Store</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="storemodule.html" class="tsd-kind-icon">Store<wbr>Module</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../globals.html#usestore" class="tsd-kind-icon">use<wbr>Store</a>
 					</li>
 				</ul>
 			</nav>

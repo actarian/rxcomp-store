@@ -1,6 +1,6 @@
 import { merge, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { StoreType, useStore } from '../../../src/rxcomp-store';
+import { StoreType, useStore } from '../../../../src/rxcomp-store';
 import ApiService, { ITodoItem } from '../api/api.service';
 
 const { state$, busy$, cached$, reducer, catchState, retryState, cancel } = useStore({

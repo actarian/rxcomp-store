@@ -1,78 +1,68 @@
 ﻿{
   "targets": {
     "browser": {
-      "compile": [
-        {
-          "input": "test/*.html",
-          "output": "docs/",
-          "minify": false
+      "compile": [{
+        "input": "web/client/*.html",
+        "output": "docs/",
+        "minify": false
+      }, {
+        "input": "web/client/css/main.scss",
+        "output": "docs/css/main.css",
+        "minify": true
+      }, {
+        "input": "web/client/js/main.ts",
+        "output": {
+          "file": "docs/js/main.js",
+          "format": "iife"
         },
-        {
-          "input": "test/css/main.scss",
-          "output": "docs/css/main.css",
-          "minify": true
+        "globals": {
+          "rxjs": "rxjs",
+          "rxjs/operators": "rxjs.operators",
+          "immer": "immer",
+          "rxcomp": "rxcomp"
         },
-        {
-          "input": "test/js/main.ts",
-          "output": {
-            "file": "docs/js/main.js",
-            "format": "iife"
-          },
-          "globals": {
-            "rxjs": "rxjs",
-            "rxjs/operators": "rxjs.operators",
-            "immer": "immer",
-            "rxcomp": "rxcomp"
-          },
-          "minify": true
-        }
-      ],
-      "bundle": [
-        {
-          "input": "../rxcomp/dist/iife/rxcomp.js",
-          "output": "docs/js/rxcomp.js",
-          "minify": false
-        },
-        {
-          "input": "node_modules/rxcomp/dist/rxcomp-dark.css",
-          "output": "docs/css/rxcomp-dark.css",
-          "minify": true
-        }
-      ]
+        "minify": true
+      }],
+      "bundle": [{
+        "input": "node_modules/rxcomp/dist/umd/rxcomp.js",
+        "output": "docs/js/rxcomp.js",
+        "minify": false
+      }, {
+        "input": "node_modules/rxcomp/dist/rxcomp-dark.css",
+        "output": "docs/css/rxcomp-dark.css",
+        "minify": true
+      }],
+      "copy": [{
+        "input": "web/client/assets/**/*.*",
+        "output": "docs/assets/"
+      }]
     },
     "dist": {
-      "compile": [
-        {
-          "input": "src/rxcomp-store.ts",
-          "output": [
-            {
-              "file": "dist/cjs/",
-              "format": "cjs"
-            },
-            {
-              "file": "dist/esm/",
-              "format": "esm"
-            },
-            {
-              "file": "dist/umd/rxcomp-store.js",
-              "format": "umd",
-              "minify": true
-            },
-            {
-              "file": "dist/iife/rxcomp-store.js",
-              "format": "iife",
-              "minify": true
-            }
-          ],
-          "globals": {
-            "immer": "immer",
-            "rxjs": "rxjs",
-            "rxjs/operators": "rxjs.operators",
-            "rxcomp": "rxcomp"
-          },
-          "name": "rxcomp.store"
-        }
-      ]
+      "compile": [{
+        "input": "src/rxcomp-store.ts",
+        "output": [{
+          "file": "dist/cjs/",
+          "format": "cjs"
+        }, {
+          "file": "dist/esm/",
+          "format": "esm"
+        }, {
+          "file": "dist/umd/rxcomp-store.js",
+          "format": "umd",
+          "minify": true
+        }, {
+          "file": "dist/iife/rxcomp-store.js",
+          "format": "iife",
+          "minify": true
+        }],
+        "globals": {
+          "immer": "immer",
+          "rxjs": "rxjs",
+          "rxjs/operators": "rxjs.operators",
+          "rxcomp": "rxcomp"
+        },
+        "name": "rxcomp.store"
+      }]
     }
   },
   "server": {
