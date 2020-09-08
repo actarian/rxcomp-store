@@ -4,10 +4,8 @@ import SessionStorageService from './session-storage.service';
 import { IStorageItem } from './storage.service';
 
 export default class SessionStorageComponent extends Component {
-
 	active: boolean = false;
 	items: IStorageItem[] = [];
-
 	onInit() {
 		this.items = SessionStorageService.toArray();
 		SessionStorageService.items$.pipe(
@@ -17,21 +15,17 @@ export default class SessionStorageComponent extends Component {
 			this.pushChanges();
 		});
 	}
-
 	onToggle() {
 		this.active = !this.active;
 		console.log('SessionStorageComponent.onToggle', this.active);
 		this.pushChanges();
 	}
-
 	onClear() {
 		SessionStorageService.clear();
 	}
-
 	onRemove(item: IStorageItem) {
 		SessionStorageService.delete(item.name);
 	}
-
 	static meta: IFactoryMeta = {
 		selector: 'session-storage-component',
 		template: `

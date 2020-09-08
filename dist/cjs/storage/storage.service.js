@@ -16,7 +16,7 @@ var StorageService = /** @class */ (function () {
         var flag = false;
         var storage;
         try {
-            storage = window[type];
+            storage = rxcomp_1.WINDOW[type];
             var x = '__storage_test__';
             storage.setItem(x, x);
             storage.removeItem(x);

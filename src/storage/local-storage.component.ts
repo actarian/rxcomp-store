@@ -4,10 +4,8 @@ import LocalStorageService from './local-storage.service';
 import { IStorageItem } from './storage.service';
 
 export default class LocalStorageComponent extends Component {
-
 	active: boolean = false;
 	items: IStorageItem[] = [];
-
 	onInit() {
 		this.items = LocalStorageService.toArray();
 		LocalStorageService.items$.pipe(
@@ -17,20 +15,16 @@ export default class LocalStorageComponent extends Component {
 			this.pushChanges();
 		});
 	}
-
 	onToggle() {
 		this.active = !this.active;
 		this.pushChanges();
 	}
-
 	onClear() {
 		LocalStorageService.clear();
 	}
-
 	onRemove(item: IStorageItem) {
 		LocalStorageService.delete(item.name);
 	}
-
 	static meta: IFactoryMeta = {
 		selector: 'local-storage-component',
 		template: `

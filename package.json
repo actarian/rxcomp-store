@@ -2,7 +2,7 @@
   "author": "Luca Zampetti <lzampetti@gmail.com>",
   "name": "rxcomp-store",
   "description": "Reactive StoreModule for RxComp component library",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.0-beta.18",
   "browser": "dist/umd/rxcomp-store.js",
   "main": "dist/cjs/rxcomp-store.js",
   "types": "dist/cjs/rxcomp-store.d.ts",
@@ -38,7 +38,7 @@
   "dependencies": {
     "immer": "7.0.8",
     "rxjs": "6.6.2",
-    "rxcomp": "1.0.0-beta.17",
+    "rxcomp": "1.0.0-beta.18",
     "tslib": "2.0.1"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer } from 'rxcomp';
+import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer, WINDOW } from 'rxcomp';
 export default class StorageService {
     static encode(decoded) {
         let encoded = Serializer.encode(decoded, [encodeJson, encodeURIComponent, encodeBase64]) || null;
@@ -12,7 +12,7 @@ export default class StorageService {
         let flag = false;
         let storage;
         try {
-            storage = window[type];
+            storage = WINDOW[type];
             const x = '__storage_test__';
             storage.setItem(x, x);
             storage.removeItem(x);

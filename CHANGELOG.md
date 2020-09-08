@@ -3,7 +3,7 @@ All notable changes to the "rxcomp-store" library will be documented in this fil
 
 ---
 
-## [1.0.0-beta.17] - 2020-09-05
+## [1.0.0-beta.18] - 2020-09-08
 ### Updated
 - dependancies
 

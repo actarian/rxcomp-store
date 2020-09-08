@@ -4,10 +4,8 @@ import CookieStorageService from './cookie-storage.service';
 import { IStorageItem } from './storage.service';
 
 export default class CookieStorageComponent extends Component {
-
 	active: boolean = false;
 	items: IStorageItem[] = [];
-
 	onInit() {
 		this.items = CookieStorageService.toArray();
 		CookieStorageService.items$.pipe(
@@ -17,20 +15,16 @@ export default class CookieStorageComponent extends Component {
 			this.pushChanges();
 		});
 	}
-
 	onToggle() {
 		this.active = !this.active;
 		this.pushChanges();
 	}
-
 	onClear() {
 		CookieStorageService.clear();
 	}
-
 	onRemove(item: IStorageItem) {
 		CookieStorageService.delete(item.name);
 	}
-
 	static meta: IFactoryMeta = {
 		selector: 'cookie-storage-component',
 		template: `

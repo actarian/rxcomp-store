@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-store v1.0.0-beta.17
+ * @license rxcomp-store v1.0.0-beta.18
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -42,7 +42,7 @@ function _inheritsLoose(subClass, superClass) {
     var storage;
 
     try {
-      storage = window[type];
+      storage = rxcomp.WINDOW[type];
       var x = '__storage_test__';
       storage.setItem(x, x);
       storage.removeItem(x);

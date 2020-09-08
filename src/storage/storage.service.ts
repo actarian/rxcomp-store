@@ -1,29 +1,24 @@
-import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer } from 'rxcomp';
+import { decodeBase64, decodeJson, encodeBase64, encodeJson, Serializer, WINDOW } from 'rxcomp';
 
 export interface IStorageItem {
 	name: string;
 	value: any;
 }
-
 export default class StorageService {
-
 	static supported: boolean = false;
-
 	static encode(decoded: any): string | null {
 		let encoded: string | null = Serializer.encode(decoded, [encodeJson, encodeURIComponent, encodeBase64]) || null;
 		return encoded;
 	}
-
 	static decode(encoded: string | null): any {
 		let decoded: any = Serializer.decode(encoded, [decodeBase64, decodeURIComponent, decodeJson]);
 		return decoded;
 	}
-
 	static isSupported(type: 'localStorage' | 'sessionStorage'): boolean {
 		let flag: boolean = false;
 		let storage;
 		try {
-			storage = window[type];
+			storage = WINDOW[type];
 			const x = '__storage_test__';
 			storage.setItem(x, x);
 			storage.removeItem(x);

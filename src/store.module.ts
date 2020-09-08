@@ -30,7 +30,6 @@ const pipes: typeof Pipe[] = [
  * @extends Module
  */
 export default class StoreModule extends Module {
-
 	static meta: IModuleMeta = {
 		declarations: [
 			...factories,
@@ -41,5 +40,4 @@ export default class StoreModule extends Module {
 			...pipes,
 		]
 	};
-
 }
