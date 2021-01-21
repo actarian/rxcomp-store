@@ -36,7 +36,7 @@
     "docs2": "typedoc --out docs/documentation src/rxcomp-store.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
   },
   "dependencies": {
-    "immer": "7.0.8",
+    "immer": "8.0.1",
     "rxjs": "6.6.2",
     "rxcomp": "1.0.0-beta.18",
     "tslib": "2.0.1"
